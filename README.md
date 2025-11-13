@@ -1,340 +1,190 @@
-# Supabase Database MCP Server
+# MCP Servers Monorepo
 
-[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](#)
+[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg)](https://pnpm.io/)
+[![Changesets](https://img.shields.io/badge/versioned%20with-changesets-blue)](https://github.com/changesets/changesets)
 
-A powerful Model Context Protocol (MCP) server that gives AI agents full access to your Supabase/PostgreSQL database. Execute queries, manage schemas, run migrations, and more - all through natural language.
+A collection of Model Context Protocol (MCP) servers for various integrations and services. This monorepo is managed with pnpm workspaces and uses Changesets for intelligent versioning.
 
-## ✨ Compatible With
+## 📦 Packages
 
-| Platform | Status | Documentation |
-|----------|--------|---------------|
-| ![Claude](https://img.shields.io/badge/Claude-Code-5B3FFF?logo=anthropic) | ✅ Native | [Setup Guide](#quick-start) |
-| ![Claude](https://img.shields.io/badge/Claude-Desktop-5B3FFF?logo=anthropic) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#claude-desktop) |
-| ![Cursor](https://img.shields.io/badge/Cursor-IDE-000000?logo=cursor) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#cursor-ide) |
-| ![Gemini](https://img.shields.io/badge/Gemini-CLI-4285F4?logo=google) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#gemini-cli) |
-| ![Cline](https://img.shields.io/badge/Cline-VSCode-007ACC?logo=visual-studio-code) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#cline-vs-code) |
-| ![Roo Code](https://img.shields.io/badge/Roo_Code-VSCode-007ACC?logo=visual-studio-code) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#roo-code-vs-code) |
-| ![Windsurf](https://img.shields.io/badge/Windsurf-IDE-00ADD8) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#windsurf-ide) |
-| ![Codex](https://img.shields.io/badge/OpenAI-Codex-412991?logo=openai) | ✅ Native | [PLATFORMS.md](PLATFORMS.md#openai-codex) |
-| ![JetBrains](https://img.shields.io/badge/JetBrains-IDEs-000000?logo=jetbrains) | ✅ Native (2025.1+) | [PLATFORMS.md](PLATFORMS.md#jetbrains-ides) |
-
-**Transport:** stdio (local) | **Language:** Node.js | **Database:** PostgreSQL/Supabase
-
----
+| Package | Version | Description |
+|---------|---------|-------------|
+| [mcp-supabase-db](./packages/supabase-db) | [![npm](https://img.shields.io/npm/v/mcp-supabase-db.svg)](https://www.npmjs.com/package/mcp-supabase-db) | Supabase/PostgreSQL database access for AI agents |
 
 ## 🚀 Quick Start
 
-### Option 1: npm Install (Recommended)
-
-Install the package globally or locally:
+Each package can be installed independently from npm:
 
 ```bash
-# Global installation (recommended)
+# Install globally
 npm install -g mcp-supabase-db
 
-# Or local installation in your project
+# Or use npx
+npx mcp-supabase-db
+
+# Or install in your project
 npm install mcp-supabase-db
 ```
 
-**Configure your AI tool:**
+See individual package READMEs for detailed setup instructions.
 
-Add to your AI tool's MCP configuration (e.g., Claude Code):
+## 🛠️ Development
 
-```json
-{
-  "mcpServers": {
-    "supabase-db": {
-      "command": "npx",
-      "args": ["mcp-supabase-db"],
-      "env": {
-        "POSTGRES_URL_NON_POOLING": "postgresql://user:password@host:5432/database"
-      }
-    }
-  }
-}
-```
+This monorepo uses **pnpm workspaces** for package management and **Changesets** for version management.
 
-Or if installed globally:
+### Prerequisites
 
-```json
-{
-  "mcpServers": {
-    "supabase-db": {
-      "command": "supabase-db-mcp",
-      "env": {
-        "POSTGRES_URL_NON_POOLING": "postgresql://user:password@host:5432/database"
-      }
-    }
-  }
-}
-```
+- Node.js >= 18.0.0
+- pnpm >= 8.0.0
 
-**Restart your AI tool** and verify by asking: *"What database tools are available?"*
-
-See [PLATFORMS.md](PLATFORMS.md) for platform-specific configuration.
-
-### Option 2: Auto-Installer (From Source)
-
-Clone the repository and run the installer:
-
-**macOS/Linux:**
 ```bash
-git clone https://github.com/KodyDennon/mcp-servers.git
-cd mcp-servers
-./install.sh
+# Install pnpm if you don't have it
+npm install -g pnpm
 ```
 
-**Windows:**
-```powershell
+### Setup
+
+```bash
+# Clone the repository
 git clone https://github.com/KodyDennon/mcp-servers.git
 cd mcp-servers
-.\install.ps1
+
+# Install dependencies for all packages
+pnpm install
+
+# Run tests across all packages
+pnpm test
+
+# Build all packages
+pnpm build
 ```
 
-The installer will:
-- ✓ Check Node.js version
-- ✓ Install dependencies
-- ✓ Configure database connection
-- ✓ Detect and configure AI tools
-- ✓ Test the connection
+### Workspace Commands
 
-### Option 3: Manual Setup (From Source)
+```bash
+# Install a dependency in a specific package
+pnpm --filter mcp-supabase-db add some-package
 
-1. **Clone and install:**
+# Run a script in a specific package
+pnpm --filter mcp-supabase-db start
+
+# Run a script in all packages
+pnpm -r build
+```
+
+## 📝 Contributing
+
+### Adding a New Package
+
+1. Create a new directory in `packages/`:
    ```bash
-   git clone https://github.com/KodyDennon/mcp-servers.git
-   cd mcp-servers
-   npm install
+   mkdir packages/my-new-mcp-server
+   cd packages/my-new-mcp-server
    ```
 
-2. **Configure environment:**
-
-   Create or update `.env` in repo root:
-   ```bash
-   POSTGRES_URL_NON_POOLING="postgresql://user:password@host:5432/database"
-   ```
-
-3. **Add to your AI tool:**
-
-   See [PLATFORMS.md](PLATFORMS.md) for platform-specific instructions.
-
-   Example for Claude Code:
+2. Initialize with `package.json`:
    ```json
    {
-     "mcpServers": {
-       "supabase-db": {
-         "command": "node",
-         "args": ["/absolute/path/to/mcp-servers/index.js"],
-         "env": {
-           "POSTGRES_URL_NON_POOLING": "postgresql://..."
-         }
-       }
-     }
+     "name": "mcp-my-service",
+     "version": "0.0.0",
+     "description": "MCP server for My Service",
+     "type": "module",
+     "main": "index.js",
+     "repository": {
+       "type": "git",
+       "url": "git+https://github.com/KodyDennon/mcp-servers.git",
+       "directory": "packages/my-new-mcp-server"
+     },
+     "license": "MIT"
    }
    ```
 
-4. **Restart your AI tool**
+3. Install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-5. **Verify:**
-   Ask your AI: *"What database tools are available?"*
+### Making Changes
 
----
+1. Make your changes to any package
 
-## 🛠️ Features
+2. Create a changeset to document your changes:
+   ```bash
+   pnpm changeset
+   ```
 
-### SQL Operations
-- **`query`** - Execute any SQL (SELECT, INSERT, UPDATE, DELETE, DDL)
-- **`queryTransaction`** - Run multiple queries atomically with COMMIT/ROLLBACK
-- **`explainQuery`** - EXPLAIN/ANALYZE for query optimization
+   This will prompt you to:
+   - Select which packages changed
+   - Specify if it's a major, minor, or patch change
+   - Write a summary of the changes
 
-### Schema Management
-- **`listTables`** - View all tables with size and column count
-- **`getTableSchema`** - Detailed schema (columns, types, constraints, indexes)
-- **`listIndexes`** - View database indexes
-- **`listFunctions`** - List stored procedures and triggers
-- **`searchSchema`** - Find tables/columns/functions by name pattern
+3. Commit your changes including the changeset:
+   ```bash
+   git add .
+   git commit -m "feat: add new feature"
+   ```
 
-### Database Operations
-- **`runMigration`** - Execute migration files from `packages/db/supabase/migrations/`
-- **`listMigrations`** - See all available migration files
-- **`getDatabaseStats`** - Database size, connections, table stats
-- **`createBackup`** - Generate SQL dumps (requires `pg_dump`)
+### Versioning
 
-### Safety Features
-- ⚠️ **Dangerous query warnings** (DELETE/UPDATE without WHERE)
-- 🔢 **Row limits** (default: 1000, configurable)
-- ⏱️ **Smart timeouts** (60s queries, 120s transactions)
-- 🔒 **Connection pooling** with automatic SSL handling
-
----
-
-## 📖 Documentation
-
-- **[PLATFORMS.md](PLATFORMS.md)** - Detailed setup for all 9 AI platforms
-- **[Examples](examples/)** - Platform-specific config examples
-- **[Validation](#validation)** - Test your configuration
-
----
-
-## ✅ Validation
-
-### Run Configuration Validator
+Changesets automatically manages versions:
 
 ```bash
-node validate-config.js
+# Apply changesets and bump versions
+pnpm version
+
+# This will:
+# - Read all changesets
+# - Bump package versions
+# - Update CHANGELOG.md files
+# - Delete applied changesets
 ```
 
-This checks:
-- ✓ Node.js version (>= 18)
-- ✓ Dependencies installed
-- ✓ Environment variables set
-- ✓ Database connection works
-- ✓ MCP server starts
-- ✓ Detects installed AI tools
-- ✓ Validates configurations
-
-### Test Connection Manually
+### Publishing
 
 ```bash
-POSTGRES_URL_NON_POOLING="postgresql://..." node index.js
+# Build and publish all changed packages to npm
+pnpm release
+
+# Or manually:
+pnpm build
+pnpm changeset publish
 ```
 
-You should see:
+## 📖 Changeset Types
+
+- **Major** (`major`): Breaking changes - bump from 1.0.0 → 2.0.0
+- **Minor** (`minor`): New features - bump from 1.0.0 → 1.1.0
+- **Patch** (`patch`): Bug fixes - bump from 1.0.0 → 1.0.1
+
+## 🏗️ Project Structure
+
 ```
-============================================================
-🚀 @kody/supabase-db-mcp-server
-📦 Version: 1.0.0
-🔌 Transport: stdio
-============================================================
-✓ Connected to database: postgres
-  User: postgres
-  PostgreSQL: 15.1
-============================================================
-✅ Supabase DB MCP Server is ready!
-============================================================
+mcp-servers/
+├── .changeset/           # Changesets configuration and pending changesets
+├── packages/
+│   ├── supabase-db/     # Supabase MCP server package
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   └── README.md
+│   └── [future-servers] # Additional MCP servers go here
+├── package.json          # Root package.json (private)
+├── pnpm-workspace.yaml   # pnpm workspace configuration
+└── README.md             # This file
 ```
-
----
-
-## 🎯 Usage Examples
-
-Once configured, AI agents can interact with your database naturally:
-
-**List Tables:**
-> "Show me all tables in the database"
-
-**Query Data:**
-> "Get all users created in the last 7 days"
-
-**Schema Inspection:**
-> "What's the structure of the posts table?"
-
-**Transactions:**
-> "Transfer 100 credits from user A to user B (use a transaction)"
-
-**Migrations:**
-> "Run the migration: 20250111190000_add_settings_tables.sql"
-
-**Performance Analysis:**
-> "Explain and analyze this query: SELECT * FROM posts WHERE user_id = 123"
-
-**Backups:**
-> "Create a backup of the entire database"
-
----
-
-## 🔒 Security
-
-### Best Practices
-
-1. **Don't hardcode credentials** in config files
-2. **Use environment variables** for connection strings
-3. **Restrict database permissions** (create limited user)
-4. **Use read replicas** for safety (agents can't modify data)
-5. **Keep backups** before allowing schema modifications
-
-### Example: Limited User
-
-```sql
-CREATE USER mcp_agent WITH PASSWORD 'secure_password';
-GRANT CONNECT ON DATABASE your_db TO mcp_agent;
-GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO mcp_agent;
--- Omit DELETE and DDL for safety
-```
-
-### Environment Variable Loading
-
-Server loads environment variables in this order:
-1. MCP config `env` object (highest priority)
-2. `.env` file in repo root
-3. System environment variables
-
----
-
-## 🐛 Troubleshooting
-
-### Server Not Starting
-
-1. Check Node.js version: `node -v` (must be >= 18)
-2. Install dependencies: `npm install`
-3. Verify paths in config are absolute
-4. Run validator: `node validate-config.js`
-
-### Connection Failed
-
-1. Check connection string format: `postgresql://user:pass@host:5432/db`
-2. Use **non-pooling** URL (not PgBouncer)
-3. Verify Supabase allows your IP (Database Settings → Network)
-4. Test with `psql`: `psql "postgresql://..."`
-
-### Tools Not Showing Up
-
-1. Restart AI tool completely (not just reload)
-2. Check config file location (see [PLATFORMS.md](PLATFORMS.md))
-3. Validate JSON syntax (no trailing commas)
-4. Check AI tool logs/console for errors
-
-### Platform-Specific Issues
-
-See [PLATFORMS.md - Troubleshooting](PLATFORMS.md#troubleshooting) for detailed solutions.
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Test with validator: `node validate-config.js`
-4. Submit a pull request
-
----
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+MIT © Kody Dennon
 
----
+All packages in this monorepo are licensed under the MIT License.
 
 ## 🔗 Links
 
-- **Repository:** https://github.com/KodyDennon/PersonalOF/tree/main/mcp-servers/supabase-db
-- **Issues:** https://github.com/KodyDennon/PersonalOF/issues
-- **MCP Spec:** https://modelcontextprotocol.io
-- **Supabase:** https://supabase.com
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [pnpm Workspaces](https://pnpm.io/workspaces)
+- [Changesets Documentation](https://github.com/changesets/changesets)
 
 ---
 
-## 💡 Tips
-
-- Use `query` with `rowLimit: 0` to get all rows (no limit)
-- Use `queryTransaction` for multi-step operations that must succeed/fail together
-- Use `explainQuery` with `analyze: true` to see actual query performance
-- Use `searchSchema` with `%` wildcards: `%user%` matches any table/column with "user"
-- Migration files must be in `packages/db/supabase/migrations/` directory
-
----
-
-**Built with ❤️ using the [Model Context Protocol](https://modelcontextprotocol.io)**
+**Note:** This monorepo uses pnpm. If you're using npm or yarn, please install pnpm first: `npm install -g pnpm`
