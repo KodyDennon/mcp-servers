@@ -1,0 +1,63 @@
+{
+  "name": "mcp-supabase-db",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for Supabase/PostgreSQL database access. Provides AI agents with full SQL query capabilities, schema inspection, migrations, transactions, and backups. Compatible with Claude Code, Cursor, Gemini CLI, Cline, Windsurf, Codex, and more.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "supabase-db-mcp": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "validate": "node validate-config.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "supabase",
+    "postgresql",
+    "postgres",
+    "database",
+    "sql",
+    "ai",
+    "claude",
+    "cursor",
+    "gemini",
+    "cline",
+    "windsurf",
+    "codex",
+    "llm",
+    "agent",
+    "mcp-server"
+  ],
+  "author": "Kody Dennon",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KodyDennon/mcp-servers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KodyDennon/mcp-servers/issues"
+  },
+  "homepage": "https://github.com/KodyDennon/mcp-servers#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "PLATFORMS.md",
+    "validate-config.js",
+    "install.sh",
+    "install.ps1",
+    "examples/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "pg": "^8.13.1",
+    "dotenv": "^16.4.7"
+  }
+}

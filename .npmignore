@@ -1,0 +1,35 @@
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Testing
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation (will be available on GitHub)
+.editorconfig
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

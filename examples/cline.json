@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "supabase-db": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-servers/supabase-db/index.js"],
+      "env": {
+        "POSTGRES_URL_NON_POOLING": "postgresql://user:password@host:5432/database"
+      }
+    }
+  }
+}

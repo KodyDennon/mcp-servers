@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "supabase-db": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-servers/supabase-db/index.js"],
+      "disabled": false
+    }
+  }
+}
