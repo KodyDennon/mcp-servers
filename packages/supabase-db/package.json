@@ -1,6 +1,6 @@
 {
   "name": "mcp-supabase-db",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Model Context Protocol (MCP) server for Supabase/PostgreSQL database access with dual-mode operation. Provides AI agents with 35 direct tools AND code execution mode (98% token reduction, privacy-first, streaming). Compatible with Claude Code, Cursor, Gemini CLI, Cline, Windsurf, and more.",
   "type": "module",
   "main": "index.js",

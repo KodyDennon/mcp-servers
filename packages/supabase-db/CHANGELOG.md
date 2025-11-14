@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.0
+
+### Minor Changes
+
+- - Added production-ready Next.js documentation site exported into `docs/` (new setup instructions, requirements, and multi-server landing page)
+  - Introduced lint-staged + Husky pre-commit workflow to enforce formatting/lint before commits
+  - Added GitHub Actions CI (tests + lint) and automated releases via Changesets + npm publish
+  - Upgraded key dependencies (Supabase SDK, OpenAI, LangChain, Next) and enforced Node 20+ runtime for better stability
+
 All notable changes to the Supabase DB MCP Server will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -14,6 +23,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ### Added
 
 #### Code Execution Architecture
+
 - **Dual-Mode Operation**: Server now supports both traditional MCP tools and new code execution mode via `MCP_MODE` environment variable
 - **17 TypeScript Modules** providing complete code execution API:
   - `query.ts` - SQL execution with caching and privacy filters
@@ -32,6 +42,7 @@ This is a **major version release** that introduces groundbreaking code executio
   - `types.ts` - Complete TypeScript type definitions
 
 #### Skills Library (13 Pre-built Patterns)
+
 - **User Analytics Skills** (4):
   - `getActiveUserGrowth()` - Track user growth over time
   - `getUserRetention()` - Cohort retention analysis
@@ -52,6 +63,7 @@ This is a **major version release** that introduces groundbreaking code executio
   - `getCohortReport()` - Cohort analysis
 
 #### Advanced Features
+
 - **Query Caching**: TTL-based caching system with hit rate tracking (80%+ hit rates achieved)
 - **Privacy Protection**: Automatic PII tokenization for 15+ sensitive field patterns (email, phone, SSN, etc.)
 - **Data Streaming**: Process millions of rows without loading all into memory
@@ -60,6 +72,7 @@ This is a **major version release** that introduces groundbreaking code executio
 - **Sandbox Security**: Whitelist-based module restrictions and resource limits
 
 #### Performance Improvements
+
 - **98.7% Token Reduction**: Code execution mode reduces token usage by up to 98.7% for data operations
   - Query 10K rows: 50,000 tokens → 2,000 tokens (96% reduction)
   - Multi-step analysis: 75,000 tokens → 3,000 tokens (96% reduction)
@@ -67,12 +80,14 @@ This is a **major version release** that introduces groundbreaking code executio
 - **Memory Efficiency**: Streaming support for datasets too large to fit in memory
 
 #### Testing & Quality
+
 - **Comprehensive Test Suite**: 110 passing tests across 13 test files
 - **35%+ Code Coverage**: Critical modules have 96-100% coverage
 - **Build System**: TypeScript compilation with source maps and declarations
 - **Type Safety**: Complete TypeScript definitions for all APIs
 
 #### Documentation
+
 - **5 Comprehensive Guides** (73KB total documentation):
   - `CODE_EXECUTION_GUIDE.md` (18KB) - Complete usage guide with 6 detailed examples
   - `CODE_EXECUTION_ANALYSIS.md` (27KB) - Deep dive into code execution architecture
@@ -83,6 +98,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ### Changed
 
 #### Architecture Refactoring
+
 - **Modularized Codebase**: Refactored 449-line monolithic `index.js` into clean modular structure:
   - `src/config.js` - Configuration and environment management
   - `src/server.js` - MCP server initialization with mode switching
@@ -94,17 +110,20 @@ This is a **major version release** that introduces groundbreaking code executio
   - `index.js` - Simplified 8-line entry point
 
 #### Improved Error Handling
+
 - Fixed missing `await` keywords in async handler calls (prevented unhandled promise rejections)
 - Enhanced error messages for code API initialization failures
 - Better connection error handling with descriptive messages
 
 #### Package Management
+
 - Added TypeScript as devDependency (`^5.3.0`)
 - Added Babel TypeScript preset for test support
 - Added build script (`npm run build`) for TypeScript compilation
 - Updated test script to compile TypeScript before running tests
 
 #### Tool Naming
+
 - Renamed edge functions tool from `listFunctions` to `listEdgeFunctions` to avoid naming conflict with database functions tool
 
 ### Fixed
@@ -141,6 +160,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ### Breaking Changes
 
 ⚠️ **Mode Selection Required**: The server now requires explicit mode selection via `MCP_MODE` environment variable:
+
 - `MCP_MODE=direct` - Traditional direct tool mode (default for backward compatibility)
 - `MCP_MODE=code-api` - New code execution mode
 
@@ -153,11 +173,13 @@ This is a **major version release** that introduces groundbreaking code executio
 1. **Existing users** - No action required! The server defaults to `direct` mode for backward compatibility.
 
 2. **To use code execution mode**:
+
    ```bash
    MCP_MODE=code-api npm start
    ```
 
 3. **In Claude Desktop config**:
+
    ```json
    {
      "mcpServers": {
@@ -194,6 +216,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ## [2.0.0] - 2024-11-13
 
 ### Added
+
 - Initial modularization of monolithic server
 - Connection manager with multi-database support
 - 35 direct MCP tools across 9 categories:
@@ -208,6 +231,7 @@ This is a **major version release** that introduces groundbreaking code executio
   - AI Tools (3 tools - RAG, indexing)
 
 ### Changed
+
 - Restructured project into modular architecture
 - Separated concerns into distinct modules
 - Improved code organization and maintainability
@@ -217,6 +241,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ## [1.0.0] - 2024-11-12
 
 ### Added
+
 - Initial release of Supabase DB MCP Server
 - Basic PostgreSQL/Supabase database access via MCP
 - Direct tool calling interface
@@ -228,6 +253,7 @@ This is a **major version release** that introduces groundbreaking code executio
 ## Future Roadmap
 
 ### Planned for v3.1.0
+
 - Integration tests with real database
 - Token usage benchmarking suite
 - Additional ML and forecasting skills
@@ -235,6 +261,7 @@ This is a **major version release** that introduces groundbreaking code executio
 - Performance monitoring dashboard
 
 ### Planned for v4.0.0
+
 - Published npm package
 - VS Code extension for testing
 - GraphQL query support
