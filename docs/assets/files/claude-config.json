@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "supabase-db": {
+      "command": "supabase-db-mcp",
+      "env": {
+        "POSTGRES_URL_NON_POOLING": "postgresql://user:pass@host:5432/db",
+        "SUPABASE_URL": "https://your-project.supabase.co",
+        "SUPABASE_SERVICE_ROLE_KEY": "supabase-service-role",
+        "SUPABASE_ACCESS_TOKEN": "supabase-access-token",
+        "SUPABASE_PROJECT_ID": "project-id",
+        "OPENAI_API_KEY": "sk-your-key"
+      }
+    }
+  }
+}

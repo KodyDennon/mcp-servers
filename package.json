@@ -23,7 +23,7 @@
     "release": "pnpm build && changeset publish",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "lint": "pnpm --filter docs-site lint",
+    "lint": "pnpm exec prettier --check \"docs/**/*.{html,css,js,json}\" README.md",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "prepare": "husky"
   },
@@ -34,8 +34,6 @@
     "prettier": "^3.6.2"
   },
   "lint-staged": {
-    "packages/**/*.{js,ts,tsx,jsx,json,md,mdx,yml,yaml}": "pnpm exec prettier --write",
-    "*.md": "pnpm exec prettier --write",
-    "packages/docs-site/**/*.{ts,tsx,js,jsx}": "sh -c 'cd packages/docs-site && pnpm lint'"
+    "**/*.{js,ts,tsx,jsx,css,md,mdx,json,yml,yaml,html}": "pnpm exec prettier --write"
   }
 }

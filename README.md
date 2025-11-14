@@ -77,16 +77,14 @@ pnpm -r build
 
 ## 📚 Documentation Site
 
-The GitHub Pages site (`docs/`) is generated from the Next.js project in `packages/docs-site/`.
+GitHub Pages serves straight from the `docs/` directory (pure HTML/CSS/JS). To update the site:
 
-```bash
-cd packages/docs-site
-npm install        # first time only
-npm run dev        # local preview
-npm run export     # rebuild static assets into /docs for GitHub Pages
-```
-
-`npm run export` automatically regenerates `docs/` (including the custom `CNAME`) so the repo is ready to push to GitHub Pages from the `docs` folder.
+1. Edit the relevant file(s) under `docs/` (for example `docs/index.html` or `docs/assets/css/style.css`).
+2. Run the workspace formatter to keep styles consistent:
+   ```bash
+   pnpm lint   # prettier --check
+   ```
+3. Commit the updated assets and push to `main`. GitHub Pages will redeploy automatically with the custom domain in `docs/CNAME`.
 
 ## 📝 Contributing
 

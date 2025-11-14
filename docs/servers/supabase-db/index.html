@@ -1,14 +1,201 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/e4af272ccee01ff0-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/b8edaf980a17f39c.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-b10e1bf7a5faa37c.js"/><script src="/_next/static/chunks/fd9d1056-749e5812300142af.js" async=""></script><script src="/_next/static/chunks/117-44e863620db02712.js" async=""></script><script src="/_next/static/chunks/main-app-4ada4b24116510a4.js" async=""></script><script src="/_next/static/chunks/972-fe008c56cc430895.js" async=""></script><script src="/_next/static/chunks/app/servers/%5Bslug%5D/page-c990069351ffeb71.js" async=""></script><title>Supabase DB | MCP Docs</title><meta name="description" content="Dual-mode Model Context Protocol server for Supabase/PostgreSQL with 35 direct tools and code execution mode."/><meta property="og:title" content="MCP Servers"/><meta property="og:description" content="Production-ready Model Context Protocol servers. Install, configure, and deploy from one monorepo."/><meta property="og:url" content="https://mcpservers.kodydennon.com/"/><meta property="og:site_name" content="MCP Servers"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="MCP Servers"/><meta name="twitter:description" content="Production-ready Model Context Protocol servers. Install, configure, and deploy from one monorepo."/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__className_f367f3"><header class="navbar"><div class="navbar__brand"><a href="/"><span class="navbar__logo">MCP Servers</span></a><span class="navbar__tag">Monorepo</span></div><nav class="navbar__links"><a href="/servers/">Servers</a><a href="https://github.com/KodyDennon/mcp-servers" target="_blank" rel="noreferrer">GitHub</a></nav></header><main class="page"><section class="section section--hero"><div class="section__inner"><p class="section__kicker">MCP Server</p><h1>Supabase DB</h1><p class="hero__lede">Supabase DB MCP exposes every database primitive you expect—connections, schema, migrations, data, admin—and layers on a Claude Code-compatible execution surface with caching, streaming, and skill libraries.</p><div class="hero__cta"><a class="button primary" href="https://www.npmjs.com/package/mcp-supabase-db" target="_blank" rel="noreferrer">View on npm</a><a class="button ghost" href="https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db" target="_blank" rel="noreferrer">View package source</a></div><div class="hero__stats"><div><p class="stat__value">35</p><p class="stat__label">Tools</p></div><div><p class="stat__value">Direct + Code</p><p class="stat__label">Execution modes</p></div><div><p class="stat__value">≈98%</p><p class="stat__label">Token savings</p></div></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Environment</p><h2>Requirements</h2><div class="section__content"><ul class="list"><li>Node.js 20 LTS or newer</li><li>npm 10+ or pnpm 9+</li><li>Supabase project with service-role credentials</li><li>OpenAI API key for AI/RAG helpers</li></ul></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Get started</p><h2>Install</h2><div class="section__content"><div class="grid grid--two"><div class="card"><p class="card__kicker">Global CLI</p><pre class="code-block" data-language="bash"><code><span>npm install -g mcp-supabase-db
-</span><span>supabase-db-mcp
-</span></code></pre></div><div class="card"><p class="card__kicker">Project local</p><pre class="code-block" data-language="bash"><code><span>npm install mcp-supabase-db
-</span><span>npx mcp-supabase-db
-</span><span># or add to your MCP client config
-</span></code></pre></div><div class="card"><p class="card__kicker">Workspace build (monorepo)</p><p>Run from the repository root.</p><pre class="code-block" data-language="bash"><code><span>pnpm install
-</span><span>pnpm --filter mcp-supabase-db build
-</span><span>pnpm --filter mcp-supabase-db start
-</span></code></pre></div></div></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Secrets &amp; environment</p><h2>Configuration</h2><div class="section__content"><p>The server loads `.env` followed by `mcp-config.json`. Override the search root by setting `MCP_SUPABASE_ROOT=/absolute/path/to/mcp-servers` when running the CLI globally.</p><div class="env-table"><div class="env-table__row"><code>POSTGRES_URL_NON_POOLING</code><p>Direct Postgres connection string (no pooling).</p></div><div class="env-table__row"><code>SUPABASE_URL</code><p>Supabase project URL, e.g. https://xyz.supabase.co.</p></div><div class="env-table__row"><code>SUPABASE_SERVICE_ROLE_KEY</code><p>Service role key (alias SUPABASE_SECRET_KEY).</p></div><div class="env-table__row"><code>SUPABASE_ACCESS_TOKEN</code><p>Dashboard access token used for Supabase management APIs.</p></div><div class="env-table__row"><code>SUPABASE_PROJECT_ID</code><p>Project reference (15 character string).</p></div><div class="env-table__row"><code>OPENAI_API_KEY</code><p>Required for AI helpers, embeddings, RAG tools.</p></div></div><ul class="list"><li>All secrets can be supplied via your MCP client config if you prefer not to write to disk.</li><li>Additional optional knobs: `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP`, `CODE_EXECUTION_MODE`.</li></ul></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Operate</p><h2>Execution modes</h2><div class="section__content"><div class="grid grid--two"><div class="card card--mode"><h3>Direct tools (default)</h3><p>35 discrete MCP tools for schema, data, migration, admin, realtime, and AI operations.</p></div><div class="card card--mode"><h3>Code execution sandbox</h3><p>Ships multi-step workflows into Claude Code’s sandbox. Tokens stay tiny, sensitive data never leaves the sandbox.</p><pre class="code-block" data-language="bash"><code><span>MCP_MODE=code-api CODE_EXECUTION_MODE=sandbox
-</span></code></pre></div><div class="card card--mode"><h3>Code execution direct</h3><p>Runs code locally for maximum power. Pair with robust client-side safeguards.</p><pre class="code-block" data-language="bash"><code><span>MCP_MODE=code-api CODE_EXECUTION_MODE=direct
-</span></code></pre></div></div></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Quality gates</p><h2>Testing &amp; QA</h2><div class="section__content"><p>Run these commands inside `<!-- -->packages/supabase-db<!-- -->` before publishing:</p><pre class="code-block" data-language="bash"><code><span>npm test
-</span><span>npm run build
-</span><span>npm audit --production
-</span></code></pre></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Highlights</p><h2>Capabilities</h2><div class="section__content"><ul class="list list--grid"><li>Connection, schema, query, migration, and admin tooling</li><li>Edge functions + realtime subscriptions</li><li>AI helpers with directory/URL indexing and RAG</li><li>Claude Code compatible code-execution surface</li><li>Environment validation + guided onboarding</li></ul></div></div></section><section class="section"><div class="section__inner"><p class="section__kicker">Links</p><h2>Resources</h2><div class="section__content"><ul class="list"><li><a target="_blank" href="https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db">Package README</a></li><li><a target="_blank" href="https://www.npmjs.com/package/mcp-supabase-db">npm package</a></li><li><a target="_blank" href="https://modelcontextprotocol.io/">Protocol spec</a></li></ul></div></div></section></main><footer class="footer"><div>© <!-- -->2025<!-- --> MCP Servers. Built for the Model Context Protocol community.</div><a href="https://github.com/KodyDennon/mcp-servers" target="_blank" rel="noreferrer">View on GitHub</a></footer><script src="/_next/static/chunks/webpack-b10e1bf7a5faa37c.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/css/b8edaf980a17f39c.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"3:I[2846,[],\"\"]\n5:I[2972,[\"972\",\"static/chunks/972-fe008c56cc430895.js\",\"551\",\"static/chunks/app/servers/%5Bslug%5D/page-c990069351ffeb71.js\"],\"\"]\n6:I[4707,[],\"\"]\n8:I[6423,[],\"\"]\na:I[1060,[],\"\"]\n7:[\"slug\",\"supabase-db\",\"d\"]\nb:[]\n"])</script><script>self.__next_f.push([1,"0:[\"$\",\"$L3\",null,{\"buildId\":\"U-06HfXIrPjhrzC86kmSd\",\"assetPrefix\":\"\",\"urlParts\":[\"\",\"servers\",\"supabase-db\",\"\"],\"initialTree\":[\"\",{\"children\":[\"servers\",{\"children\":[[\"slug\",\"supabase-db\",\"d\"],{\"children\":[\"__PAGE__?{\\\"slug\\\":\\\"supabase-db\\\"}\",{}]}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"servers\",{\"children\":[[\"slug\",\"supabase-db\",\"d\"],{\"children\":[\"__PAGE__\",{},[[\"$L4\",[[\"$\",\"header\",null,{\"className\":\"navbar\",\"children\":[[\"$\",\"div\",null,{\"className\":\"navbar__brand\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/\",\"children\":[\"$\",\"span\",null,{\"className\":\"navbar__logo\",\"children\":\"MCP Servers\"}]}],[\"$\",\"span\",null,{\"className\":\"navbar__tag\",\"children\":\"Monorepo\"}]]}],[\"$\",\"nav\",null,{\"className\":\"navbar__links\",\"children\":[[\"$\",\"$L5\",null,{\"href\":\"/servers\",\"children\":\"Servers\"}],[\"$\",\"a\",null,{\"href\":\"https://github.com/KodyDennon/mcp-servers\",\"target\":\"_blank\",\"rel\":\"noreferrer\",\"children\":\"GitHub\"}]]}]]}],[\"$\",\"main\",null,{\"className\":\"page\",\"children\":[[\"$\",\"section\",null,{\"className\":\"section section--hero\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"MCP Server\"}],[\"$\",\"h1\",null,{\"children\":\"Supabase DB\"}],[\"$\",\"p\",null,{\"className\":\"hero__lede\",\"children\":\"Supabase DB MCP exposes every database primitive you expect—connections, schema, migrations, data, admin—and layers on a Claude Code-compatible execution surface with caching, streaming, and skill libraries.\"}],[\"$\",\"div\",null,{\"className\":\"hero__cta\",\"children\":[[\"$\",\"a\",null,{\"className\":\"button primary\",\"href\":\"https://www.npmjs.com/package/mcp-supabase-db\",\"target\":\"_blank\",\"rel\":\"noreferrer\",\"children\":\"View on npm\"}],[\"$\",\"a\",null,{\"className\":\"button ghost\",\"href\":\"https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db\",\"target\":\"_blank\",\"rel\":\"noreferrer\",\"children\":\"View package source\"}]]}],[\"$\",\"div\",null,{\"className\":\"hero__stats\",\"children\":[[\"$\",\"div\",\"Tools\",{\"children\":[[\"$\",\"p\",null,{\"className\":\"stat__value\",\"children\":\"35\"}],[\"$\",\"p\",null,{\"className\":\"stat__label\",\"children\":\"Tools\"}]]}],[\"$\",\"div\",\"Execution modes\",{\"children\":[[\"$\",\"p\",null,{\"className\":\"stat__value\",\"children\":\"Direct + Code\"}],[\"$\",\"p\",null,{\"className\":\"stat__label\",\"children\":\"Execution modes\"}]]}],[\"$\",\"div\",\"Token savings\",{\"children\":[[\"$\",\"p\",null,{\"className\":\"stat__value\",\"children\":\"≈98%\"}],[\"$\",\"p\",null,{\"className\":\"stat__label\",\"children\":\"Token savings\"}]]}]]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Environment\"}],[\"$\",\"h2\",null,{\"children\":\"Requirements\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[\"$\",\"ul\",null,{\"className\":\"list\",\"children\":[[\"$\",\"li\",\"Node.js 20 LTS or newer\",{\"children\":\"Node.js 20 LTS or newer\"}],[\"$\",\"li\",\"npm 10+ or pnpm 9+\",{\"children\":\"npm 10+ or pnpm 9+\"}],[\"$\",\"li\",\"Supabase project with service-role credentials\",{\"children\":\"Supabase project with service-role credentials\"}],[\"$\",\"li\",\"OpenAI API key for AI/RAG helpers\",{\"children\":\"OpenAI API key for AI/RAG helpers\"}]]}]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Get started\"}],[\"$\",\"h2\",null,{\"children\":\"Install\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid grid--two\",\"children\":[[\"$\",\"div\",\"Global CLI\",{\"className\":\"card\",\"children\":[[\"$\",\"p\",null,{\"className\":\"card__kicker\",\"children\":\"Global CLI\"}],null,[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"npm install -g mcp-supabase-db\\n\"}],[\"$\",\"span\",\"1\",{\"children\":\"supabase-db-mcp\\n\"}]]}]}]]}],[\"$\",\"div\",\"Project local\",{\"className\":\"card\",\"children\":[[\"$\",\"p\",null,{\"className\":\"card__kicker\",\"children\":\"Project local\"}],null,[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"npm install mcp-supabase-db\\n\"}],[\"$\",\"span\",\"1\",{\"children\":\"npx mcp-supabase-db\\n\"}],[\"$\",\"span\",\"2\",{\"children\":\"# or add to your MCP client config\\n\"}]]}]}]]}],[\"$\",\"div\",\"Workspace build (monorepo)\",{\"className\":\"card\",\"children\":[[\"$\",\"p\",null,{\"className\":\"card__kicker\",\"children\":\"Workspace build (monorepo)\"}],[\"$\",\"p\",null,{\"children\":\"Run from the repository root.\"}],[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"pnpm install\\n\"}],[\"$\",\"span\",\"1\",{\"children\":\"pnpm --filter mcp-supabase-db build\\n\"}],[\"$\",\"span\",\"2\",{\"children\":\"pnpm --filter mcp-supabase-db start\\n\"}]]}]}]]}]]}]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Secrets \u0026 environment\"}],[\"$\",\"h2\",null,{\"children\":\"Configuration\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[[\"$\",\"p\",null,{\"children\":\"The server loads `.env` followed by `mcp-config.json`. Override the search root by setting `MCP_SUPABASE_ROOT=/absolute/path/to/mcp-servers` when running the CLI globally.\"}],[\"$\",\"div\",null,{\"className\":\"env-table\",\"children\":[[\"$\",\"div\",\"POSTGRES_URL_NON_POOLING\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"POSTGRES_URL_NON_POOLING\"}],[\"$\",\"p\",null,{\"children\":\"Direct Postgres connection string (no pooling).\"}]]}],[\"$\",\"div\",\"SUPABASE_URL\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"SUPABASE_URL\"}],[\"$\",\"p\",null,{\"children\":\"Supabase project URL, e.g. https://xyz.supabase.co.\"}]]}],[\"$\",\"div\",\"SUPABASE_SERVICE_ROLE_KEY\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"SUPABASE_SERVICE_ROLE_KEY\"}],[\"$\",\"p\",null,{\"children\":\"Service role key (alias SUPABASE_SECRET_KEY).\"}]]}],[\"$\",\"div\",\"SUPABASE_ACCESS_TOKEN\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"SUPABASE_ACCESS_TOKEN\"}],[\"$\",\"p\",null,{\"children\":\"Dashboard access token used for Supabase management APIs.\"}]]}],[\"$\",\"div\",\"SUPABASE_PROJECT_ID\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"SUPABASE_PROJECT_ID\"}],[\"$\",\"p\",null,{\"children\":\"Project reference (15 character string).\"}]]}],[\"$\",\"div\",\"OPENAI_API_KEY\",{\"className\":\"env-table__row\",\"children\":[[\"$\",\"code\",null,{\"children\":\"OPENAI_API_KEY\"}],[\"$\",\"p\",null,{\"children\":\"Required for AI helpers, embeddings, RAG tools.\"}]]}]]}],[\"$\",\"ul\",null,{\"className\":\"list\",\"children\":[[\"$\",\"li\",\"All secrets can be supplied via your MCP client config if you prefer not to write to disk.\",{\"children\":\"All secrets can be supplied via your MCP client config if you prefer not to write to disk.\"}],[\"$\",\"li\",\"Additional optional knobs: `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP`, `CODE_EXECUTION_MODE`.\",{\"children\":\"Additional optional knobs: `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP`, `CODE_EXECUTION_MODE`.\"}]]}]]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Operate\"}],[\"$\",\"h2\",null,{\"children\":\"Execution modes\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[\"$\",\"div\",null,{\"className\":\"grid grid--two\",\"children\":[[\"$\",\"div\",\"Direct tools (default)\",{\"className\":\"card card--mode\",\"children\":[[\"$\",\"h3\",null,{\"children\":\"Direct tools (default)\"}],[\"$\",\"p\",null,{\"children\":\"35 discrete MCP tools for schema, data, migration, admin, realtime, and AI operations.\"}],null]}],[\"$\",\"div\",\"Code execution sandbox\",{\"className\":\"card card--mode\",\"children\":[[\"$\",\"h3\",null,{\"children\":\"Code execution sandbox\"}],[\"$\",\"p\",null,{\"children\":\"Ships multi-step workflows into Claude Code’s sandbox. Tokens stay tiny, sensitive data never leaves the sandbox.\"}],[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"MCP_MODE=code-api CODE_EXECUTION_MODE=sandbox\\n\"}]]}]}]]}],[\"$\",\"div\",\"Code execution direct\",{\"className\":\"card card--mode\",\"children\":[[\"$\",\"h3\",null,{\"children\":\"Code execution direct\"}],[\"$\",\"p\",null,{\"children\":\"Runs code locally for maximum power. Pair with robust client-side safeguards.\"}],[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"MCP_MODE=code-api CODE_EXECUTION_MODE=direct\\n\"}]]}]}]]}]]}]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Quality gates\"}],[\"$\",\"h2\",null,{\"children\":\"Testing \u0026 QA\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[[\"$\",\"p\",null,{\"children\":[\"Run these commands inside `\",\"packages/supabase-db\",\"` before publishing:\"]}],[\"$\",\"pre\",null,{\"className\":\"code-block\",\"data-language\":\"bash\",\"children\":[\"$\",\"code\",null,{\"children\":[[\"$\",\"span\",\"0\",{\"children\":\"npm test\\n\"}],[\"$\",\"span\",\"1\",{\"children\":\"npm run build\\n\"}],[\"$\",\"span\",\"2\",{\"children\":\"npm audit --production\\n\"}]]}]}]]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Highlights\"}],[\"$\",\"h2\",null,{\"children\":\"Capabilities\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[\"$\",\"ul\",null,{\"className\":\"list list--grid\",\"children\":[[\"$\",\"li\",\"Connection, schema, query, migration, and admin tooling\",{\"children\":\"Connection, schema, query, migration, and admin tooling\"}],[\"$\",\"li\",\"Edge functions + realtime subscriptions\",{\"children\":\"Edge functions + realtime subscriptions\"}],[\"$\",\"li\",\"AI helpers with directory/URL indexing and RAG\",{\"children\":\"AI helpers with directory/URL indexing and RAG\"}],[\"$\",\"li\",\"Claude Code compatible code-execution surface\",{\"children\":\"Claude Code compatible code-execution surface\"}],[\"$\",\"li\",\"Environment validation + guided onboarding\",{\"children\":\"Environment validation + guided onboarding\"}]]}]}]]}]}],[\"$\",\"section\",null,{\"className\":\"section\",\"children\":[\"$\",\"div\",null,{\"className\":\"section__inner\",\"children\":[[\"$\",\"p\",null,{\"className\":\"section__kicker\",\"children\":\"Links\"}],[\"$\",\"h2\",null,{\"children\":\"Resources\"}],[\"$\",\"div\",null,{\"className\":\"section__content\",\"children\":[\"$\",\"ul\",null,{\"className\":\"list\",\"children\":[[\"$\",\"li\",\"https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db\",\"target\":\"_blank\",\"children\":\"Package README\"}]}],[\"$\",\"li\",\"https://www.npmjs.com/package/mcp-supabase-db\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"https://www.npmjs.com/package/mcp-supabase-db\",\"target\":\"_blank\",\"children\":\"npm package\"}]}],[\"$\",\"li\",\"https://modelcontextprotocol.io/\",{\"children\":[\"$\",\"$L5\",null,{\"href\":\"https://modelcontextprotocol.io/\",\"target\":\"_blank\",\"children\":\"Protocol spec\"}]}]]}]}]]}]}]]}],[\"$\",\"footer\",null,{\"className\":\"footer\",\"children\":[[\"$\",\"div\",null,{\"children\":[\"© \",2025,\" MCP Servers. Built for the Model Context Protocol community.\"]}],[\"$\",\"a\",null,{\"href\":\"https://github.com/KodyDennon/mcp-servers\",\"target\":\"_blank\",\"rel\":\"noreferrer\",\"children\":\"View on GitHub\"}]]}]],null],null],null]},[null,[\"$\",\"$L6\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"servers\",\"children\",\"$7\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[null,[\"$\",\"$L6\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"servers\",\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\"}]],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/b8edaf980a17f39c.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__className_f367f3\",\"children\":[\"$\",\"$L6\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[]}]}]}]],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$L9\"],\"globalErrorComponent\":\"$a\",\"missingSlots\":\"$Wb\"}]\n"])</script><script>self.__next_f.push([1,"9:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"Supabase DB | MCP Docs\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Dual-mode Model Context Protocol server for Supabase/PostgreSQL with 35 direct tools and code execution mode.\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:title\",\"content\":\"MCP Servers\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:description\",\"content\":\"Production-ready Model Context Protocol servers. Install, configure, and deploy from one monorepo.\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:url\",\"content\":\"https://mcpservers.kodydennon.com/\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:site_name\",\"content\":\"MCP Servers\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"MCP Servers\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Production-ready Model Context Protocol servers. Install, configure, and deploy from one monorepo.\"}],[\"$\",\"meta\",\"11\",{\"name\":\"next-size-adjust\"}]]\n4:null\n"])</script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supabase DB MCP | Docs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <script defer src="../../assets/js/main.js"></script>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav__brand">
+        <a href="../../">MCP Servers</a>
+        <span class="tag">Supabase DB</span>
+      </div>
+      <nav class="nav__links">
+        <a href="../">Servers</a>
+        <a
+          href="https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db"
+          target="_blank"
+          >Source</a
+        >
+        <a href="https://www.npmjs.com/package/mcp-supabase-db" target="_blank"
+          >npm</a
+        >
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <p class="hero__eyebrow">Supabase • PostgreSQL</p>
+        <h1 class="hero__title">Supabase DB MCP Server</h1>
+        <p class="hero__lede">
+          35 direct database tools plus Claude Code-compatible execution blocks
+          with caching, streaming, and privacy-aware RAG helpers.
+        </p>
+        <div class="button-row">
+          <a
+            class="button primary"
+            href="https://www.npmjs.com/package/mcp-supabase-db"
+            target="_blank"
+            >Install from npm</a
+          >
+          <a
+            class="button ghost"
+            href="../../assets/files/claude-config.json"
+            download
+            >Sample Claude config</a
+          >
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <p class="stat__value">35</p>
+            <p class="stat__label">Direct tools</p>
+          </div>
+          <div class="stat">
+            <p class="stat__value">2</p>
+            <p class="stat__label">Execution modes</p>
+          </div>
+          <div class="stat">
+            <p class="stat__value">98%</p>
+            <p class="stat__label">Token savings (code mode)</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <p class="section__kicker">Installation</p>
+        <div class="section__inner">
+          <div class="grid">
+            <div class="card">
+              <p class="card__label">Global CLI</p>
+              <pre class="code">
+npm install -g mcp-supabase-db
+supabase-db-mcp</pre
+              >
+            </div>
+            <div class="card">
+              <p class="card__label">Project local</p>
+              <pre class="code">
+npm install mcp-supabase-db
+npx mcp-supabase-db</pre
+              >
+            </div>
+            <div class="card">
+              <p class="card__label">Monorepo workspace</p>
+              <pre class="code">
+pnpm --filter mcp-supabase-db build
+pnpm --filter mcp-supabase-db start</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <p class="section__kicker">Configuration</p>
+        <div class="section__inner">
+          <p>
+            Create a <code>.env</code> (or <code>mcp-config.json</code>) at the
+            repo root. Override lookup path with
+            <code>MCP_SUPABASE_ROOT=/path/to/mcp-servers</code> when running the
+            global CLI.
+          </p>
+          <div class="list">
+            <li><strong>POSTGRES_URL_NON_POOLING</strong> — PostgreSQL URI</li>
+            <li><strong>SUPABASE_URL</strong> — https://YOUR.supabase.co</li>
+            <li>
+              <strong>SUPABASE_SERVICE_ROLE_KEY</strong> (alias
+              SUPABASE_SECRET_KEY)
+            </li>
+            <li><strong>SUPABASE_ACCESS_TOKEN</strong> — dashboard token</li>
+            <li><strong>SUPABASE_PROJECT_ID</strong> — project reference</li>
+            <li><strong>OPENAI_API_KEY</strong> — required for RAG/indexing</li>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <p class="section__kicker">Execution modes</p>
+        <div class="section__inner">
+          <div class="grid">
+            <div class="card">
+              <p class="card__label">Direct tools</p>
+              <h3 class="card__title">Default mode</h3>
+              <p>35 standalone MCP tools for schema, data, admin, and AI.</p>
+              <pre class="code">supabase-db-mcp</pre>
+            </div>
+            <div class="card">
+              <p class="card__label">Code execution</p>
+              <h3 class="card__title">Sandbox</h3>
+              <p>Claude Code sandbox with caching + privacy.</p>
+              <pre class="code">
+MCP_MODE=code-api CODE_EXECUTION_MODE=sandbox supabase-db-mcp</pre
+              >
+            </div>
+            <div class="card">
+              <p class="card__label">Code execution</p>
+              <h3 class="card__title">Direct</h3>
+              <p>Full trust execution on your machine.</p>
+              <pre class="code">
+MCP_MODE=code-api CODE_EXECUTION_MODE=direct supabase-db-mcp</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <p class="section__kicker">Quality gates</p>
+        <div class="section__inner">
+          <div class="grid">
+            <div class="card">
+              <p class="card__label">Tests</p>
+              <pre class="code">pnpm --filter mcp-supabase-db test</pre>
+            </div>
+            <div class="card">
+              <p class="card__label">Build</p>
+              <pre class="code">pnpm --filter mcp-supabase-db build</pre>
+            </div>
+            <div class="card">
+              <p class="card__label">Release</p>
+              <pre class="code">
+pnpm changeset
+pnpm release</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <p class="section__kicker">Features</p>
+        <div class="section__inner">
+          <ul class="list">
+            <li>Connection, schema, query, migration, and admin tooling</li>
+            <li>Edge functions + realtime subscription helpers</li>
+            <li>Directory/URL indexing tools with embeddings + RAG</li>
+            <li>Streaming + caching + privacy filters for large workloads</li>
+            <li>Works with Claude Code, Cursor, Gemini CLI, Cline, Windsurf</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a href="../">← Back to server catalog</a>
+      <a
+        href="https://github.com/KodyDennon/mcp-servers/issues/new"
+        target="_blank"
+        >Report an issue</a
+      >
+    </footer>
+  </body>
+</html>

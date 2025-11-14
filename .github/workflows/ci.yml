@@ -29,9 +29,8 @@ jobs:
       - name: Run package tests
         run: pnpm --filter mcp-supabase-db test
 
-      - name: Lint docs site
-        run: pnpm --filter docs-site lint
+      - name: Lint workspace
+        run: pnpm lint
 
       - name: Ensure packages build
         run: pnpm -r build
-
