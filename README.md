@@ -12,6 +12,8 @@ A collection of Model Context Protocol (MCP) servers for various integrations an
 |---------|---------|-------------|
 | [mcp-supabase-db](./packages/supabase-db) | [![npm](https://img.shields.io/npm/v/mcp-supabase-db.svg)](https://www.npmjs.com/package/mcp-supabase-db) | Supabase/PostgreSQL database access for AI agents |
 
+👉 Need end-user friendly docs? Check the [GitHub Pages site](./docs/index.md) for installation and configuration walkthroughs tailored to the monorepo.
+
 ## 🚀 Quick Start
 
 Each package can be installed independently from npm:
@@ -35,7 +37,7 @@ This monorepo uses **pnpm workspaces** for package management and **Changesets**
 
 ### Prerequisites
 
-- Node.js >= 18.0.0
+- Node.js >= 20.0.0
 - pnpm >= 8.0.0
 
 ```bash

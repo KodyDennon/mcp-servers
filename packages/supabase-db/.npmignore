@@ -1,35 +1,58 @@
-# Git files
-.git/
-.gitignore
-.gitattributes
+# Tests
+tests/
+*.test.js
+*.spec.js
+coverage/
+.nyc_output/
 
 # Development files
+babel.config.cjs
+jest.config.cjs
+tsconfig.json
+.eslintrc*
+.prettierrc*
+
+# Environment files
+.env
+.env.*
+!.env.example
+mcp-config.json
+
+# Build artifacts
+dist/
+*.log
+npm-debug.log*
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
 
 # CI/CD
 .github/
-.gitlab-ci.yml
 .travis.yml
+.circleci/
 
-# Testing
-test/
-tests/
-*.test.js
-*.spec.js
+# Backups
+backups/
+*.backup
+*.bak
 
-# Documentation (will be available on GitHub)
-.editorconfig
+# Temporary files
+tmp/
+temp/
+*.tmp
 
-# Environment
-.env
-.env.*
-
-# Logs
-*.log
-
-# OS
+# macOS
 .DS_Store
-Thumbs.db
+
+# Development documentation
+TESTING.md
+MCP_COMPLIANCE.md

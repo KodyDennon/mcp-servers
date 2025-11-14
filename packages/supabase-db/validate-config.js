@@ -181,32 +181,54 @@ async function checkEnvironmentVariables() {
     info("Checking system environment variables...");
   }
 
-  const requiredVars = ["POSTGRES_URL_NON_POOLING"];
+  const requiredVars = [
+    { name: "POSTGRES_URL_NON_POOLING" },
+    { name: "SUPABASE_URL" },
+    { name: "SUPABASE_SERVICE_ROLE_KEY", aliases: ["SUPABASE_SECRET_KEY"] },
+    { name: "SUPABASE_ACCESS_TOKEN" },
+    { name: "SUPABASE_PROJECT_ID" },
+    { name: "OPENAI_API_KEY" },
+  ];
   let allPresent = true;
 
-  for (const varName of requiredVars) {
-    if (process.env[varName]) {
-      success(`${varName} is set`);
+  for (const variable of requiredVars) {
+    const value =
+      process.env[variable.name] ||
+      (variable.aliases || []).map((alias) => process.env[alias]).find(Boolean);
 
-      // Validate format
-      const value = process.env[varName];
-      if (value.startsWith("postgresql://") || value.startsWith("postgres://")) {
-        success(`  Format looks correct (starts with postgresql://)`);
+    if (value) {
+      const displayName = variable.name;
+      success(`${displayName} is set`);
 
-        // Check for common issues
-        if (value.includes("sslmode=")) {
-          warning(`  Contains sslmode parameter (will be stripped by server)`);
-        }
-        if (!value.includes("@")) {
-          error(`  Missing @ symbol - connection string may be malformed`);
+      if (variable.aliases && !process.env[variable.name]) {
+        info(`  Using alias ${variable.aliases[0]}`);
+      }
+
+      if (variable.name === "POSTGRES_URL_NON_POOLING") {
+        if (value.startsWith("postgresql://") || value.startsWith("postgres://")) {
+          success(`  Format looks correct (starts with postgresql://)`);
+
+          if (value.includes("sslmode=")) {
+            warning(`  Contains sslmode parameter (will be stripped by server)`);
+          }
+          if (!value.includes("@")) {
+            error(`  Missing @ symbol - connection string may be malformed`);
+            allPresent = false;
+          }
+        } else {
+          error(`  Invalid format - should start with postgresql://`);
           allPresent = false;
         }
-      } else {
-        error(`  Invalid format - should start with postgresql://`);
-        allPresent = false;
+      }
+
+      if (variable.name === "SUPABASE_URL" && !value.startsWith("https://")) {
+        warning(`  Supabase URL should start with https://`);
       }
     } else {
-      error(`${varName} is NOT set`);
+      const aliasHint = variable.aliases
+        ? ` (or ${variable.aliases.join(", ")})`
+        : "";
+      error(`${variable.name}${aliasHint} is NOT set`);
       allPresent = false;
     }
   }
@@ -214,8 +236,8 @@ async function checkEnvironmentVariables() {
   if (!allPresent) {
     warning("\nTo fix:");
     warning(`1. Create .env file in: ${repoRoot}`);
-    warning(`2. Add: POSTGRES_URL_NON_POOLING="postgresql://user:pass@host:5432/db"`);
-    warning(`3. Or set in MCP config 'env' object`);
+    warning(`2. Add all required keys exactly as shown in README.md (Configuration section)`);
+    warning(`3. Or set them via the 'env' object in your MCP client configuration`);
   }
 
   return allPresent;
@@ -511,7 +533,10 @@ async function main() {
 
   // Detect and validate AI tool configurations
   const detectedTools = await detectInstalledTools();
-  results.push({ name: "AI tools detection", passed: detectedTools.length > 0 });
+  results.push({
+    name: `AI tools detection (${detectedTools.length} config${detectedTools.length === 1 ? "" : "s"})`,
+    passed: true,
+  });
 
   if (detectedTools.length > 0) {
     results.push({
