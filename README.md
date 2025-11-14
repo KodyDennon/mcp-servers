@@ -8,11 +8,11 @@ A collection of Model Context Protocol (MCP) servers for various integrations an
 
 ## 📦 Packages
 
-| Package | Version | Description |
-|---------|---------|-------------|
+| Package                                   | Version                                                                                                   | Description                                       |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | [mcp-supabase-db](./packages/supabase-db) | [![npm](https://img.shields.io/npm/v/mcp-supabase-db.svg)](https://www.npmjs.com/package/mcp-supabase-db) | Supabase/PostgreSQL database access for AI agents |
 
-👉 Need end-user friendly docs? Check the [GitHub Pages site](./docs/index.md) for installation and configuration walkthroughs tailored to the monorepo.
+👉 Need end-user friendly docs? Check the [GitHub Pages site](https://mcpservers.kodydennon.com) (built from `packages/docs-site`) for installation and configuration walkthroughs tailored to the monorepo.
 
 ## 🚀 Quick Start
 
@@ -75,17 +75,32 @@ pnpm --filter mcp-supabase-db start
 pnpm -r build
 ```
 
+## 📚 Documentation Site
+
+The GitHub Pages site (`docs/`) is generated from the Next.js project in `packages/docs-site/`.
+
+```bash
+cd packages/docs-site
+npm install        # first time only
+npm run dev        # local preview
+npm run export     # rebuild static assets into /docs for GitHub Pages
+```
+
+`npm run export` automatically regenerates `docs/` (including the custom `CNAME`) so the repo is ready to push to GitHub Pages from the `docs` folder.
+
 ## 📝 Contributing
 
 ### Adding a New Package
 
 1. Create a new directory in `packages/`:
+
    ```bash
    mkdir packages/my-new-mcp-server
    cd packages/my-new-mcp-server
    ```
 
 2. Initialize with `package.json`:
+
    ```json
    {
      "name": "mcp-my-service",
@@ -112,6 +127,7 @@ pnpm -r build
 1. Make your changes to any package
 
 2. Create a changeset to document your changes:
+
    ```bash
    pnpm changeset
    ```

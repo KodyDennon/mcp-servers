@@ -32,6 +32,10 @@ coverage/
 # Build artifacts
 dist/
 build/
+.next/
+.turbo/
+out/
+packages/docs-site/out/
 
 # Package manager locks (keep package-lock.json for npm)
 yarn.lock
