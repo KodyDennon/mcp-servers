@@ -1,6 +1,6 @@
 {
   "name": "mcp-supabase-db",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Model Context Protocol (MCP) server for Supabase/PostgreSQL database access with dual-mode operation. Provides AI agents with 35 direct tools AND code execution mode (98% token reduction, privacy-first, streaming). Compatible with Claude Code, Cursor, Gemini CLI, Cline, Windsurf, and more.",
   "type": "module",
   "main": "index.js",
@@ -24,7 +24,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "npx tsc",
-    "test": "npm run build && SUPABASE_URL=http://localhost SUPABASE_SECRET_KEY=dummy_key OPENAI_API_KEY=dummy_openai_key jest",
+    "test": "npm run build && SUPABASE_URL=http://localhost SUPABASE_SECRET_KEY=dummy_key jest",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {

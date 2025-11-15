@@ -3,13 +3,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { ConnectionManager } from "./connectionManager.js";
 import { registerHandlers } from "./handlers.js";
 import { registerCodeApiHandlers } from "./code-api-handler.js";
-import { loadConfig, ensureEnvironment } from "./config.js";
+import { loadConfig, ensureEnvironment, promptForMode } from "./config.js";
 
-const SERVER_VERSION = "3.0.0";
+const SERVER_VERSION = "3.2.0";
 const SERVER_NAME = "supabase-db";
-
-// Determine mode from environment variable
-const MCP_MODE = process.env.MCP_MODE || 'direct'; // 'direct' or 'code-api'
 
 /**
  * Create and configure the MCP server
@@ -24,7 +21,7 @@ export function createServer() {
       capabilities: {
         tools: {},
       },
-    }
+    },
   );
 }
 
@@ -38,12 +35,15 @@ export async function startServer() {
   // Ensure required environment variables are present
   await ensureEnvironment();
 
+  // Prompt for mode selection if not set (interactive mode only)
+  const MCP_MODE = await promptForMode();
+
   // Create server and connection manager
   const server = createServer();
   const connectionManager = new ConnectionManager();
 
   // Register request handlers based on mode
-  if (MCP_MODE === 'code-api') {
+  if (MCP_MODE === "code-api") {
     console.error(`Starting Supabase DB MCP Server in CODE EXECUTION mode`);
     registerCodeApiHandlers(server, connectionManager);
   } else {

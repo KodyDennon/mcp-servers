@@ -65,7 +65,7 @@ import { rag, indexDirectory, indexUrl } from "./tools/aiTools.js";
  * Get all available tools
  */
 export function getAllTools() {
-  return [
+  const tools = [
     // Connection Tools
     connectToDatabaseTool,
     listConnectionsTool,
@@ -74,10 +74,6 @@ export function getAllTools() {
     queryTool,
     queryTransactionTool,
     explainQueryTool,
-    // AI Tools
-    rag,
-    indexDirectory,
-    indexUrl,
     // Schema Tools
     listTablesTool,
     getTableSchemaTool,
@@ -112,6 +108,13 @@ export function getAllTools() {
     listEdgeFunctionsTool,
     deleteFunctionTool,
   ];
+
+  // Only include AI tools if OPENAI_API_KEY is set
+  if (process.env.OPENAI_API_KEY) {
+    tools.push(rag, indexDirectory, indexUrl);
+  }
+
+  return tools;
 }
 
 /**
@@ -120,7 +123,7 @@ export function getAllTools() {
 export function registerListToolsHandler(server) {
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     const allTools = getAllTools();
-    const toolDetails = allTools.map(tool => ({
+    const toolDetails = allTools.map((tool) => ({
       name: tool.name,
       description: tool.description,
       input_schema: tool.input_schema,
@@ -140,18 +143,35 @@ export function registerCallToolHandler(server, connectionManager) {
 
     try {
       // Connection Tools
-      if ([connectToDatabaseTool.name, listConnectionsTool.name, switchConnectionTool.name].includes(name)) {
+      if (
+        [
+          connectToDatabaseTool.name,
+          listConnectionsTool.name,
+          switchConnectionTool.name,
+        ].includes(name)
+      ) {
         return await handleConnectionToolCall(name, args, connectionManager);
       }
 
       // Query Tools
-      if ([queryTool.name, queryTransactionTool.name, explainQueryTool.name].includes(name)) {
+      if (
+        [
+          queryTool.name,
+          queryTransactionTool.name,
+          explainQueryTool.name,
+        ].includes(name)
+      ) {
         return await handleQueryToolCall(name, args, connectionManager);
       }
 
-      // AI Tools
+      // AI Tools (only if OPENAI_API_KEY is set)
       if ([rag.name, indexDirectory.name, indexUrl.name].includes(name)) {
-        const tool = getAllTools().find(t => t.name === name);
+        if (!process.env.OPENAI_API_KEY) {
+          throw new Error(
+            `Tool '${name}' requires OPENAI_API_KEY environment variable to be set. AI/RAG tools are optional and only needed for embeddings and semantic search features.`,
+          );
+        }
+        const tool = getAllTools().find((t) => t.name === name);
         const result = await tool.execute(args);
         return {
           content: [
@@ -164,34 +184,57 @@ export function registerCallToolHandler(server, connectionManager) {
       }
 
       // Schema Tools
-      if ([
-        listTablesTool.name,
-        getTableSchemaTool.name,
-        listIndexesTool.name,
-        listFunctionsTool.name,
-        searchSchemaTool.name,
-        createTableTool.name,
-        dropTableTool.name,
-        addColumnTool.name,
-        dropColumnTool.name,
-        createIndexTool.name,
-        diffSchemaTool.name,
-      ].includes(name)) {
+      if (
+        [
+          listTablesTool.name,
+          getTableSchemaTool.name,
+          listIndexesTool.name,
+          listFunctionsTool.name,
+          searchSchemaTool.name,
+          createTableTool.name,
+          dropTableTool.name,
+          addColumnTool.name,
+          dropColumnTool.name,
+          createIndexTool.name,
+          diffSchemaTool.name,
+        ].includes(name)
+      ) {
         return await handleSchemaToolCall(name, args, connectionManager);
       }
 
       // Migration Tools
-      if ([runMigrationTool.name, listMigrationsTool.name, generateMigrationTool.name, seedDataTool.name].includes(name)) {
+      if (
+        [
+          runMigrationTool.name,
+          listMigrationsTool.name,
+          generateMigrationTool.name,
+          seedDataTool.name,
+        ].includes(name)
+      ) {
         return await handleMigrationToolCall(name, args, connectionManager);
       }
 
       // Data Tools
-      if ([importDataTool.name, insertRowTool.name, updateRowTool.name, deleteRowTool.name].includes(name)) {
+      if (
+        [
+          importDataTool.name,
+          insertRowTool.name,
+          updateRowTool.name,
+          deleteRowTool.name,
+        ].includes(name)
+      ) {
         return await handleDataToolCall(name, args, connectionManager);
       }
 
       // Admin Tools
-      if ([getDatabaseStatsTool.name, createBackupTool.name, manageAuthTool.name, manageStorageTool.name].includes(name)) {
+      if (
+        [
+          getDatabaseStatsTool.name,
+          createBackupTool.name,
+          manageAuthTool.name,
+          manageStorageTool.name,
+        ].includes(name)
+      ) {
         return await handleAdminToolCall(name, args, connectionManager);
       }
 
@@ -201,7 +244,13 @@ export function registerCallToolHandler(server, connectionManager) {
       }
 
       // Edge Function Tools
-      if ([deployFunctionTool.name, listEdgeFunctionsTool.name, deleteFunctionTool.name].includes(name)) {
+      if (
+        [
+          deployFunctionTool.name,
+          listEdgeFunctionsTool.name,
+          deleteFunctionTool.name,
+        ].includes(name)
+      ) {
         return await handleEdgeFunctionToolCall(name, args);
       }
 
@@ -211,10 +260,14 @@ export function registerCallToolHandler(server, connectionManager) {
         content: [
           {
             type: "text",
-            text: JSON.stringify({
-              error: `Error in tool '${name}': ${error.message}`,
-              stack: error.stack,
-            }, null, 2),
+            text: JSON.stringify(
+              {
+                error: `Error in tool '${name}': ${error.message}`,
+                stack: error.stack,
+              },
+              null,
+              2,
+            ),
           },
         ],
       };

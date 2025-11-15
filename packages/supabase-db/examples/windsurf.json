@@ -9,7 +9,6 @@
         "SUPABASE_SERVICE_ROLE_KEY": "service-role-key",
         "SUPABASE_ACCESS_TOKEN": "dashboard-or-personal-access-token",
         "SUPABASE_PROJECT_ID": "project-ref",
-        "OPENAI_API_KEY": "sk-...",
         "MCP_MODE": "code-api",
         "CODE_EXECUTION_MODE": "direct",
         "MCP_SUPABASE_ROOT": "/absolute/path/that/stores/env"

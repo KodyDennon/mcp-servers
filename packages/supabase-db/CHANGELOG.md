@@ -1,5 +1,36 @@
 # Changelog
 
+## [3.2.0] - 2025-01-14
+
+### Added
+
+- **Interactive Mode Selection**: Server now prompts users to select their preferred MCP mode when MCP_MODE is not set
+  - Choose between Direct Tool Mode (35+ tools) or Code Execution Mode (98% token reduction)
+  - For Code Execution Mode, also select between Sandbox (secure) or Direct (fast) execution
+  - Mode preferences are automatically saved to .env file for future use
+  - Only prompts in interactive terminal sessions (non-interactive environments default to Direct Tool Mode)
+
+### Changed
+
+- **BREAKING: OpenAI API Key Now Optional**: Removed OPENAI_API_KEY from required environment variables
+  - AI/RAG tools (rag, indexDirectory, indexUrl) are now only loaded when OPENAI_API_KEY is set
+  - Users who only need database operations no longer need an OpenAI account
+  - Updated all example configurations to remove OPENAI_API_KEY requirement
+  - AI tools will show helpful error message if called without API key configured
+
+### Fixed
+
+- Fixed import error in `src/tools/adminTools.js` that was causing server startup failure
+  - Changed from importing non-existent `supabase` export to correct `getSupabaseClient()` function
+  - Server now starts successfully with only required Supabase credentials
+
+### Updated
+
+- Updated server version to 3.2.0
+- Updated all example configuration files across all supported IDEs/CLIs
+  - claude-code.json, claude-desktop.json, cursor.json, windsurf.json
+  - cline.json, gemini-cli.json, roo-code.json, jetbrains.json, codex.toml
+
 ## 3.1.0
 
 ### Minor Changes
