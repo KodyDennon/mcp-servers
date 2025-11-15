@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.2
+
+### Patch Changes
+
+- 43a499e: fix: Add graceful shutdown to fix reconnection issues
+
 ## 3.2.1
 
 ### Patch Changes
