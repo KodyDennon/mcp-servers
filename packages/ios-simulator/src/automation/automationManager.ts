@@ -1,0 +1,265 @@
+import path from "node:path";
+import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { once } from "node:events";
+import { access } from "node:fs/promises";
+import type { SimulatorDevice } from "../simctl.js";
+import type { SimulatorConfig } from "../config.js";
+import { SimulatorManager } from "../simulatorManager.js";
+import { WebDriverClient } from "./webDriverClient.js";
+import { delay } from "../utils/time.js";
+
+interface DeviceAutomationContext {
+  device: SimulatorDevice;
+  port: number;
+  process: ChildProcessWithoutNullStreams;
+  client: WebDriverClient;
+  session?: { id: string; bundleId: string };
+}
+
+export interface TapOptions {
+  device?: string;
+  x: number;
+  y: number;
+  durationMs?: number;
+  bundleId?: string;
+}
+
+export interface SwipeOptions {
+  device?: string;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  durationMs?: number;
+  bundleId?: string;
+}
+
+export interface TypeTextOptions {
+  device?: string;
+  text: string;
+  bundleId?: string;
+}
+
+export interface PressButtonOptions {
+  device?: string;
+  button: string;
+  bundleId?: string;
+}
+
+export interface HierarchyOptions {
+  device?: string;
+  bundleId?: string;
+}
+
+export class AutomationManager {
+  private readonly contexts = new Map<string, DeviceAutomationContext>();
+
+  constructor(
+    private readonly config: SimulatorConfig,
+    private readonly simulatorManager: SimulatorManager,
+  ) {}
+
+  private getProjectFile() {
+    return path.join(
+      this.config.webDriverAgentProjectPath,
+      "WebDriverAgent.xcodeproj",
+    );
+  }
+
+  private async waitForStatus(client: WebDriverClient) {
+    const timeoutAt = Date.now() + this.config.webDriverAgentStartupTimeoutMs;
+    while (Date.now() < timeoutAt) {
+      try {
+        await client.status();
+        return;
+      } catch {
+        await delay(1000);
+      }
+    }
+    throw new Error(
+      "Timed out waiting for WebDriverAgent to become available.",
+    );
+  }
+
+  private async ensureAgent(device: SimulatorDevice) {
+    const existing = this.contexts.get(device.udid);
+    if (existing && existing.process.exitCode === null) {
+      return existing;
+    }
+
+    const port =
+      existing?.port ?? this.config.webDriverAgentPort + this.contexts.size;
+    const projectFile = this.getProjectFile();
+
+    await access(projectFile).catch(() => {
+      throw new Error(
+        `WebDriverAgent.xcodeproj was not found at ${projectFile}. Set IOS_WDA_PROJECT_PATH to your WebDriverAgent checkout.`,
+      );
+    });
+
+    const args = [
+      "-project",
+      projectFile,
+      "-scheme",
+      this.config.webDriverAgentScheme,
+      "-destination",
+      `id=${device.udid}`,
+      "-derivedDataPath",
+      this.config.webDriverAgentDerivedDataPath,
+      "test",
+    ];
+
+    const child = spawn("xcodebuild", args, {
+      env: {
+        ...process.env,
+        USE_PORT: String(port),
+      },
+      stdio: "pipe",
+    });
+
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+
+    child.stdout.on("data", (chunk) =>
+      console.error(`[wda:${device.name}] ${chunk.toString().trimEnd()}`),
+    );
+    child.stderr.on("data", (chunk) =>
+      console.error(`[wda:${device.name}:err] ${chunk.toString().trimEnd()}`),
+    );
+
+    child.on("exit", (code, signal) => {
+      console.error(
+        `WebDriverAgent exited for ${device.name} (code=${code ?? "unknown"} signal=${signal ?? "unknown"})`,
+      );
+      this.contexts.delete(device.udid);
+    });
+
+    await once(child, "spawn");
+
+    const client = new WebDriverClient(
+      "127.0.0.1",
+      port,
+      this.config.webDriverAgentSessionTimeoutMs,
+    );
+    await this.waitForStatus(client);
+
+    const context: DeviceAutomationContext = {
+      device,
+      port,
+      process: child,
+      client,
+    };
+
+    this.contexts.set(device.udid, context);
+    return context;
+  }
+
+  private async ensureSession(
+    device: SimulatorDevice,
+    bundleId?: string,
+  ): Promise<DeviceAutomationContext> {
+    const context = await this.ensureAgent(device);
+    const desiredBundle = bundleId ?? this.config.webDriverAgentDefaultBundleId;
+
+    if (context.session && context.session.bundleId === desiredBundle) {
+      return context;
+    }
+
+    if (context.session) {
+      await context.client.deleteSession(context.session.id).catch(() => {});
+    }
+
+    const sessionId = await context.client.createSession(desiredBundle);
+    context.session = { id: sessionId, bundleId: desiredBundle };
+    return context;
+  }
+
+  private formatResult(device: SimulatorDevice) {
+    return {
+      name: device.name,
+      udid: device.udid,
+      runtime: device.runtimeDisplayName,
+      state: device.state,
+    };
+  }
+
+  async tap(options: TapOptions) {
+    const device = await this.simulatorManager.ensureBooted(options.device);
+    const context = await this.ensureSession(device, options.bundleId);
+    await context.client.tap(context.session!.id, {
+      x: options.x,
+      y: options.y,
+      duration: options.durationMs ? options.durationMs / 1000 : 0,
+    });
+    return { device: this.formatResult(device) };
+  }
+
+  async swipe(options: SwipeOptions) {
+    const device = await this.simulatorManager.ensureBooted(options.device);
+    const context = await this.ensureSession(device, options.bundleId);
+    await context.client.swipe(context.session!.id, {
+      fromX: options.fromX,
+      fromY: options.fromY,
+      toX: options.toX,
+      toY: options.toY,
+      duration: options.durationMs ? options.durationMs / 1000 : 0.25,
+    });
+    return { device: this.formatResult(device) };
+  }
+
+  async typeText(options: TypeTextOptions) {
+    const device = await this.simulatorManager.ensureBooted(options.device);
+    const context = await this.ensureSession(device, options.bundleId);
+    await context.client.typeText(context.session!.id, options.text);
+    return { device: this.formatResult(device) };
+  }
+
+  async pressButton(options: PressButtonOptions) {
+    const device = await this.simulatorManager.ensureBooted(options.device);
+    const context = await this.ensureSession(device, options.bundleId);
+    await context.client.pressButton(context.session!.id, options.button);
+    return { device: this.formatResult(device) };
+  }
+
+  async getHierarchy(options: HierarchyOptions) {
+    const device = await this.simulatorManager.ensureBooted(options.device);
+    const context = await this.ensureSession(device, options.bundleId);
+    const source = await context.client.getPageSource(context.session!.id);
+    return {
+      device: this.formatResult(device),
+      hierarchy: source,
+    };
+  }
+
+  async launchViaWebDriver(
+    bundleId: string,
+    deviceQuery?: string,
+    args: string[] = [],
+  ) {
+    const device = await this.simulatorManager.ensureBooted(deviceQuery);
+    const context = await this.ensureSession(device);
+    await context.client.launchApp(context.session!.id, bundleId, args);
+    return { device: this.formatResult(device) };
+  }
+
+  async terminateViaWebDriver(bundleId: string, deviceQuery?: string) {
+    const device = await this.simulatorManager.ensureBooted(deviceQuery);
+    const context = await this.ensureSession(device);
+    await context.client.terminateApp(context.session!.id, bundleId);
+    return { device: this.formatResult(device) };
+  }
+
+  async shutdown() {
+    for (const context of this.contexts.values()) {
+      try {
+        if (context.session) {
+          await context.client.deleteSession(context.session.id);
+        }
+      } catch {
+        // Ignore
+      }
+      context.process.kill();
+    }
+    this.contexts.clear();
+  }
+}

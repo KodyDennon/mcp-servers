@@ -8,9 +8,10 @@ A collection of Model Context Protocol (MCP) servers for various integrations an
 
 ## 📦 Packages
 
-| Package                                   | Version                                                                                                   | Description                                       |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| [mcp-supabase-db](./packages/supabase-db) | [![npm](https://img.shields.io/npm/v/mcp-supabase-db.svg)](https://www.npmjs.com/package/mcp-supabase-db) | Supabase/PostgreSQL database access for AI agents |
+| Package                                       | Version                                                                                                   | Description                                                                    |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [mcp-supabase-db](./packages/supabase-db)     | [![npm](https://img.shields.io/npm/v/mcp-supabase-db.svg)](https://www.npmjs.com/package/mcp-supabase-db) | Supabase/PostgreSQL database access for AI agents                              |
+| [mcp-ios-simulator](./packages/ios-simulator) | _unpublished_                                                                                             | Xcode iPhone Simulator controls, WebKit inspector, and native automation tools |
 
 👉 Need end-user friendly docs? Check the [GitHub Pages site](https://mcpservers.kodydennon.com) (built from `packages/docs-site`) for installation and configuration walkthroughs tailored to the monorepo.
 

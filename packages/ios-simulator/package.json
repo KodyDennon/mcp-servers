@@ -1,0 +1,64 @@
+{
+  "name": "mcp-ios-simulator",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server that exposes DevTools-like automation for the Xcode iPhone Simulator so AI agents can preview and test iOS experiences.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "ios-simulator-mcp": "index.js"
+  },
+  "files": [
+    "index.js",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "build": "tsc",
+    "test": "npm run build && jest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ios",
+    "simulator",
+    "xcode",
+    "devtools",
+    "automation",
+    "ai",
+    "iphone"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "dotenv": "^17.2.3",
+    "ws": "^8.18.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^24.10.1",
+    "@types/ws": "^8.5.10",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0",
+    "typescript": "^5.9.3"
+  },
+  "author": "Kody Dennon",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KodyDennon/mcp-servers.git",
+    "directory": "packages/ios-simulator"
+  },
+  "bugs": {
+    "url": "https://github.com/KodyDennon/mcp-servers/issues"
+  },
+  "homepage": "https://github.com/KodyDennon/mcp-servers/tree/main/packages/ios-simulator#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
