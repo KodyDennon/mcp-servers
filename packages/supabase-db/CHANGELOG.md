@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.1
+
+### Patch Changes
+
+- 3e9f9f0: fix: Ensure .env file is loaded from the repository root
+
 ## [3.2.0] - 2025-01-14
 
 ### Added
