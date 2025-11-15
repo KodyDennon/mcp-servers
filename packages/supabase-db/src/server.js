@@ -4,9 +4,6 @@ import { ConnectionManager } from "./connectionManager.js";
 import { registerHandlers } from "./handlers.js";
 import { registerCodeApiHandlers } from "./code-api-handler.js";
 import { loadConfig, ensureEnvironment, promptForMode } from "./config.js";
-import dotenv from "dotenv";
-import path from "path";
-import fs from "fs";
 
 const SERVER_VERSION = "3.2.0";
 const SERVER_NAME = "supabase-db";
@@ -32,21 +29,6 @@ export function createServer() {
  * Initialize and start the server
  */
 export async function startServer() {
-  // Load environment variables from .env file
-  const cwdEnvPath = path.resolve(process.cwd(), ".env");
-  const packageEnvPath = path.resolve(
-    process.cwd(),
-    "node_modules/mcp-supabase-db/.env",
-  );
-
-  if (fs.existsSync(cwdEnvPath)) {
-    dotenv.config({ path: cwdEnvPath });
-    console.error(`Loaded .env file from project root: ${cwdEnvPath}`);
-  } else if (fs.existsSync(packageEnvPath)) {
-    dotenv.config({ path: packageEnvPath });
-    console.error(`Loaded .env file from package backup: ${packageEnvPath}`);
-  }
-
   // Load configuration
   await loadConfig();
 
