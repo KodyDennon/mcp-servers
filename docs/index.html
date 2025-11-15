@@ -153,6 +153,7 @@
       <section class="hero">
         <div class="hero__content">
           <div class="hero__text">
+            <p class="hero__note">CLI-first MCP stack</p>
             <div class="hero__badge">
               <svg
                 width="14"
@@ -168,8 +169,9 @@
             </div>
             <h1 class="hero__title">Enterprise MCP Servers for Modern AI</h1>
             <p class="hero__subtitle">
-              Production-grade infrastructure to connect Claude, Cursor, and AI
-              tools to databases, APIs, and services. Built for scale.
+              Production-grade infrastructure for people who live in terminals.
+              Wire up Claude, Cursor, Gemini, or Codex without leaving your
+              workflow.
             </p>
             <div class="hero__actions">
               <a class="button primary large" href="./servers/supabase-db/">
@@ -203,48 +205,86 @@
             </div>
           </div>
           <div class="hero__visual">
-            <div class="bento-grid">
-              <div class="bento-item bento-item--large">
-                <div class="bento-item__icon">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
-                  </svg>
-                </div>
-                <div class="bento-item__value">35+</div>
-                <div class="bento-item__label">Tools Ready</div>
-              </div>
-              <div class="bento-item">
-                <div class="bento-item__value">98%</div>
-                <div class="bento-item__label">Token Savings</div>
-              </div>
-              <div class="bento-item">
-                <div class="bento-item__value">2</div>
-                <div class="bento-item__label">Exec Modes</div>
-              </div>
-              <div class="bento-item bento-item--accent">
-                <div class="bento-item__icon">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
-                </div>
-                <div class="bento-item__label">Type Safe</div>
-              </div>
+            <div class="hero__terminal">
+              <pre><code>$ npm install -g mcp-supabase-db
+$ supabase-db-mcp --mode tools
+
+# register with your agent
+$ gemini mcp add supabase-db \
+    --command npx \
+    --args "-y mcp-supabase-db"
+
+# sanity check
+$ curl http://localhost:7337/health
+{ "status": "ok", "tools": 35 }</code></pre>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dev-section" id="dev-notes">
+        <div class="section-header">
+          <span class="section-header__label">Operator defaults</span>
+          <h2 class="section-header__title">
+            Infrastructure notes for developers
+          </h2>
+          <p class="section-header__subtitle">
+            Git-friendly configs, npm installs, and shell-first workflows so you
+            can hand instructions to any agent.
+          </p>
+        </div>
+        <div class="dev-grid">
+          <div class="dev-card">
+            <h3 class="dev-card__title">Checklist</h3>
+            <ul class="dev-list">
+              <li>
+                <span class="dev-pill">env</span
+                ><span
+                  >POSTGRES_URL_NON_POOLING, SUPABASE_URL, SERVICE_ROLE_KEY,
+                  ACCESS_TOKEN, PROJECT_ID, OPENAI_API_KEY</span
+                >
+              </li>
+              <li>
+                <span class="dev-pill">validate</span
+                ><span
+                  ><code
+                    >node packages/supabase-db/validate-config.js</code
+                  ></span
+                >
+              </li>
+              <li>
+                <span class="dev-pill">install</span
+                ><span
+                  ><code>npm install -g mcp-supabase-db</code> or keep it local
+                  per repo</span
+                >
+              </li>
+              <li>
+                <span class="dev-pill">register</span
+                ><span
+                  >Copy examples from
+                  <code>node_modules/mcp-supabase-db/examples</code></span
+                >
+              </li>
+              <li>
+                <span class="dev-pill">observe</span
+                ><span
+                  ><code>tail -f ~/.mcp/supabase-db.log</code> while agents
+                  boot</span
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="dev-card dev-card--terminal">
+            <h3 class="dev-card__title">Smoke test</h3>
+            <pre><code>$ supabase-db-mcp --mode code-api \
+    --code-execution sandbox \
+    --log-level debug
+
+$ npx @modelcontextprotocol/cli ping \
+    --server supabase-db
+
+$ node packages/supabase-db/tests/simple.test.js</code></pre>
           </div>
         </div>
       </section>
@@ -495,17 +535,24 @@
             <div class="step__number">01</div>
             <h3 class="step__title">Install the Server</h3>
             <p class="step__description">
-              Install globally via npm or use npx for one-time execution
+              Global install for CLI use, or run via npx when you pin versions
+              per repo
             </p>
             <pre class="code-block"><code>npm install -g mcp-supabase-db
-# or use npx
+# project scoped
+pnpm add -D mcp-supabase-db
+
+# run
+supabase-db-mcp --help
 npx mcp-supabase-db</code></pre>
           </div>
           <div class="step">
             <div class="step__number">02</div>
             <h3 class="step__title">Configure Environment</h3>
             <p class="step__description">
-              Set up your Supabase credentials and connection details
+              Drop credentials in <code>.env</code> or
+              <code>mcp-config.json</code> and point every agent to the same
+              directory
             </p>
             <pre
               class="code-block"
@@ -518,11 +565,11 @@ OPENAI_API_KEY="sk-..."</code></pre>
             <div class="step__number">03</div>
             <h3 class="step__title">Connect Your AI Tool</h3>
             <p class="step__description">
-              Add the server to Claude Desktop, Cursor, Gemini CLI, or OpenAI
-              Codex. After installing, your agent can copy configs from
+              Symlink or copy the sample configs into Claude Desktop, Cursor,
+              Gemini CLI, or Codex. Agents can also read them straight from
               <code>node_modules/mcp-supabase-db/examples</code> (or
-              <code>$(npm root -g)/mcp-supabase-db/examples</code> for global
-              installs).
+              <code>$(npm root -g)/mcp-supabase-db/examples</code> when
+              installed globally).
             </p>
             <p class="step__description">
               Top client files:

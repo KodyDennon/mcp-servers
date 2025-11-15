@@ -49,74 +49,115 @@
 
     <main class="page">
       <section class="hero">
-        <div class="hero__badge">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path
-              d="M8 0L10 5.5L16 6.5L12 10.5L13 16L8 13L3 16L4 10.5L0 6.5L6 5.5L8 0Z"
-            />
-          </svg>
-          <span>Stable Release • v3.0</span>
-        </div>
-        <h1 class="hero__title">Supabase DB MCP Server</h1>
-        <p class="hero__subtitle">
-          Enterprise-grade Model Context Protocol server for Supabase and
-          PostgreSQL databases. 35 specialized tools, dual execution modes,
-          intelligent caching, and AI-powered features for production workloads.
-        </p>
-        <div class="button-row">
-          <a
-            class="button primary"
-            href="https://www.npmjs.com/package/mcp-supabase-db"
-            target="_blank"
-          >
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M2 4L8 0L14 4V12L8 16L2 12V4Z" />
-            </svg>
-            Install from npm
-          </a>
-          <a
-            class="button secondary"
-            href="../../assets/files/claude-config.json"
-            download
-          >
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8 2v10M4 8l4 4 4-4M2 14h12" />
-            </svg>
-            Claude Desktop Config
-          </a>
-          <a
-            class="button tertiary"
-            href="https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db"
-            target="_blank"
-          >
-            View Source Code
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M3 3L13 13M13 3v10h-10" />
-            </svg>
-          </a>
-        </div>
-        <div class="button-row">
-          <a
-            class="button secondary"
-            href="../../assets/files/cursor-config.json"
-            download
-          >
-            Cursor Config
-          </a>
-          <a
-            class="button secondary"
-            href="../../assets/files/gemini-config.json"
-            download
-          >
-            Gemini CLI Config
-          </a>
-          <a
-            class="button secondary"
-            href="../../assets/files/codex-config.toml"
-            download
-          >
-            Codex Config
-          </a>
+        <div class="hero__content">
+          <div class="hero__text">
+            <p class="hero__note">Supabase DB • Operator docs</p>
+            <div class="hero__badge">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path
+                  d="M8 0L10 5.5L16 6.5L12 10.5L13 16L8 13L3 16L4 10.5L0 6.5L6 5.5L8 0Z"
+                />
+              </svg>
+              <span>Stable Release • v3.0</span>
+            </div>
+            <h1 class="hero__title">Supabase DB MCP Server</h1>
+            <p class="hero__subtitle">
+              35 Supabase/Postgres tools, dual execution modes, and code-first
+              ergonomics. Drop it into your CLI workflow and let agents call the
+              same binaries.
+            </p>
+            <div class="button-row">
+              <a
+                class="button primary"
+                href="https://www.npmjs.com/package/mcp-supabase-db"
+                target="_blank"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M2 4L8 0L14 4V12L8 16L2 12V4Z" />
+                </svg>
+                Install from npm
+              </a>
+              <a
+                class="button secondary"
+                href="../../assets/files/claude-config.json"
+                download
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M8 2v10M4 8l4 4 4-4M2 14h12" />
+                </svg>
+                Claude Desktop Config
+              </a>
+              <a
+                class="button tertiary"
+                href="https://github.com/KodyDennon/mcp-servers/tree/main/packages/supabase-db"
+                target="_blank"
+              >
+                View Source Code
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M3 3L13 13M13 3v10h-10" />
+                </svg>
+              </a>
+            </div>
+            <div class="button-row">
+              <a
+                class="button secondary"
+                href="../../assets/files/cursor-config.json"
+                download
+              >
+                Cursor Config
+              </a>
+              <a
+                class="button secondary"
+                href="../../assets/files/gemini-config.json"
+                download
+              >
+                Gemini CLI Config
+              </a>
+              <a
+                class="button secondary"
+                href="../../assets/files/codex-config.toml"
+                download
+              >
+                Codex Config
+              </a>
+            </div>
+          </div>
+          <div class="hero__visual">
+            <div class="hero__terminal">
+              <pre><code>$ supabase-db-mcp --mode tools
+
+# sandboxed code execution
+$ MCP_MODE=code-api CODE_EXECUTION_MODE=sandbox \
+    supabase-db-mcp
+
+# health check
+$ curl http://localhost:7337/health
+
+# smoke test query
+$ npx @modelcontextprotocol/cli exec supabase-db query \
+    --sql "select 1"</code></pre>
+            </div>
+          </div>
         </div>
         <div class="hero__stats">
           <div class="stat-card">
@@ -134,6 +175,58 @@
           <div class="stat-card">
             <div class="stat-card__value">100%</div>
             <div class="stat-card__label">Type Safe</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dev-section" id="runbook">
+        <div class="section-header">
+          <span class="section-header__label">Runbook</span>
+          <h2 class="section-header__title">Keep this handy for deploys</h2>
+          <p class="section-header__subtitle">
+            Straightforward commands you can paste into ops docs or ask your
+            agent to execute.
+          </p>
+        </div>
+        <div class="dev-grid">
+          <div class="dev-card">
+            <h3 class="dev-card__title">01 • Install</h3>
+            <pre class="code-block"><code># global CLI
+npm install -g mcp-supabase-db
+
+# project dev dependency
+pnpm add -D mcp-supabase-db
+
+# run with env lookup
+MCP_SUPABASE_ROOT=$HOME/.secrets supabase-db-mcp</code></pre>
+          </div>
+          <div class="dev-card">
+            <h3 class="dev-card__title">02 • Configure</h3>
+            <pre class="code-block"><code>cat >> ~/.mcp/mcp-config.json <<'JSON'
+{
+  "supabase-db": {
+    "env": {
+      "POSTGRES_URL_NON_POOLING": "...",
+      "SUPABASE_SERVICE_ROLE_KEY": "...",
+      "SUPABASE_ACCESS_TOKEN": "...",
+      "SUPABASE_PROJECT_ID": "...",
+      "OPENAI_API_KEY": "sk-..."
+    }
+  }
+}
+JSON</code></pre>
+          </div>
+          <div class="dev-card dev-card--terminal">
+            <h3 class="dev-card__title">03 • Test & monitor</h3>
+            <pre><code># tooling
+npx @modelcontextprotocol/cli ping --server supabase-db
+
+# light query check
+npx @modelcontextprotocol/cli exec supabase-db query \
+  --sql "select now()"
+
+# logs
+tail -f ~/.mcp/supabase-db.log</code></pre>
           </div>
         </div>
       </section>
