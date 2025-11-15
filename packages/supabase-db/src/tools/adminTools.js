@@ -6,7 +6,6 @@ import { promisify } from "util";
 import { getSupabaseClient } from "../supabaseClient.js";
 
 const execAsync = promisify(exec);
-const supabase = getSupabaseClient();
 
 export const getDatabaseStatsTool = {
   name: "getDatabaseStats",
@@ -74,6 +73,9 @@ export async function handleAdminToolCall(toolName, input, connectionManager) {
   const client = await pool.connect();
   const repoRoot = resolve(process.cwd(), "../..");
   try {
+    // Initialize Supabase client here, after environment variables are loaded
+    const supabase = getSupabaseClient();
+
     switch (toolName) {
       case getDatabaseStatsTool.name: {
         const sizeResult = await client.query(`

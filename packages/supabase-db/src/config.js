@@ -20,6 +20,7 @@ const OPTIONAL_ENV_VARS = [
 
 const ENV_ALIASES = {
   SUPABASE_SERVICE_ROLE_KEY: ["SUPABASE_SECRET_KEY"],
+  SUPABASE_URL: ["POSTGRES_URL"],
 };
 
 const ENV_DESCRIPTIONS = {
@@ -38,7 +39,19 @@ const ENV_DESCRIPTIONS = {
  * Load environment variables from repo root
  */
 export function loadEnvConfig() {
-  dotenv.config({ path: resolve(repoRoot, ".env") });
+  const envPath = resolve(repoRoot, ".env");
+  console.error(`[DEBUG] repoRoot: ${repoRoot}`);
+  console.error(`[DEBUG] Attempting to load .env from: ${envPath}`);
+  dotenv.config({ path: envPath });
+  console.error(
+    `[DEBUG] process.env.POSTGRES_URL after dotenv: ${process.env.POSTGRES_URL}`,
+  );
+  console.error(
+    `[DEBUG] process.env.POSTGRES_URL_NON_POOLING after dotenv: ${process.env.POSTGRES_URL_NON_POOLING}`,
+  );
+  console.error(
+    `[DEBUG] process.env.SUPABASE_URL after dotenv: ${process.env.SUPABASE_URL}`,
+  );
 }
 
 /**

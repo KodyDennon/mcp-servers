@@ -4,6 +4,8 @@ import { ConnectionManager } from "./connectionManager.js";
 import { registerHandlers } from "./handlers.js";
 import { registerCodeApiHandlers } from "./code-api-handler.js";
 import { loadConfig, ensureEnvironment, promptForMode } from "./config.js";
+import dotenv from "dotenv";
+import path from "path";
 
 const SERVER_VERSION = "3.2.0";
 const SERVER_NAME = "supabase-db";
@@ -29,18 +31,36 @@ export function createServer() {
  * Initialize and start the server
  */
 export async function startServer() {
+  // Load environment variables from .env file at the root
+  dotenv.config({ path: path.resolve(process.cwd(), ".env") });
   // Load configuration
   await loadConfig();
 
   // Ensure required environment variables are present
   await ensureEnvironment();
 
-  // Prompt for mode selection if not set (interactive mode only)
-  const MCP_MODE = await promptForMode();
-
   // Create server and connection manager
   const server = createServer();
   const connectionManager = new ConnectionManager();
+
+  // Establish initial database connection
+  try {
+    await connectionManager.addConnection(
+      process.env.POSTGRES_URL_NON_POOLING,
+      "default",
+    );
+    console.error("Initial database connection established successfully.");
+  } catch (error) {
+    console.error(
+      "Failed to establish initial database connection:",
+      error.message,
+    );
+    // Depending on desired behavior, you might want to exit here or continue with limited functionality
+    // For now, we'll let the server start but log the error.
+  }
+
+  // Prompt for mode selection if not set (interactive mode only)
+  const MCP_MODE = await promptForMode();
 
   // Register request handlers based on mode
   if (MCP_MODE === "code-api") {
