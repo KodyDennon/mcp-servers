@@ -77,5 +77,15 @@ export async function startServer() {
 
   console.error(`Server ready! Mode: ${MCP_MODE}`);
 
+  // Graceful shutdown
+  const shutdown = async () => {
+    console.error("Shutting down server and database connections...");
+    await connectionManager.shutdown();
+    process.exit(0);
+  };
+
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+
   return { server, connectionManager, transport };
 }
