@@ -1,6 +1,6 @@
 {
   "name": "mcp-ios-simulator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Model Context Protocol server that exposes DevTools-like automation for the Xcode iPhone Simulator so AI agents can preview and test iOS experiences.",
   "type": "module",
   "main": "index.js",

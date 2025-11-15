@@ -28,6 +28,16 @@ pnpm dlx mcp-ios-simulator
 npm install -g mcp-ios-simulator
 ```
 
+### Auto-configure Claude/clients
+
+Ship the MCP entry automatically by running:
+
+```bash
+ios-simulator-mcp setup-config --config ~/.mcp.json
+```
+
+Omit `--config` to use the default Claude Desktop config path. Add `--device "iPhone 15 Pro Max"` if you want a different default simulator baked in. Restart Claude after running the command.
+
 ### Example `mcp-config.json`
 
 ```jsonc
