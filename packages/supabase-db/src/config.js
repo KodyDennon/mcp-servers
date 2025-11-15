@@ -42,7 +42,7 @@ export function loadEnvConfig() {
   const envPath = resolve(repoRoot, ".env");
   console.error(`[DEBUG] repoRoot: ${repoRoot}`);
   console.error(`[DEBUG] Attempting to load .env from: ${envPath}`);
-  dotenv.config({ path: envPath });
+  dotenv.config({ path: envPath, quiet: true });
   console.error(
     `[DEBUG] process.env.POSTGRES_URL after dotenv: ${process.env.POSTGRES_URL}`,
   );
