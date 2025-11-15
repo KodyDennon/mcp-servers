@@ -10,8 +10,8 @@
         "SUPABASE_ACCESS_TOKEN": "dashboard-or-personal-access-token",
         "SUPABASE_PROJECT_ID": "project-ref",
         "OPENAI_API_KEY": "sk-...",
-        "MCP_MODE": "tools",
-        "MCP_SUPABASE_ROOT": "/absolute/path/that/stores/env"
+        "MCP_MODE": "code-api",
+        "CODE_EXECUTION_MODE": "sandbox"
       }
     }
   }

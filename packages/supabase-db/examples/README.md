@@ -10,11 +10,20 @@ This directory contains example configuration files for different AI tools and p
 4. **Add your database connection string** (replace `postgresql://user:password@host:5432/database`)
 5. **Paste into your platform's config file** (see locations below)
 
+### Where the Files Live After Install
+
+- **Global install:** `$(npm root -g)/mcp-supabase-db/examples`
+- **Project install:** `<your-project>/node_modules/mcp-supabase-db/examples`
+
+> Ask your agent to open any file directly, e.g.  
+> `open $(npm root -g)/mcp-supabase-db/examples/claude-desktop.json`
+
 ---
 
 ## Configuration File Locations
 
 ### Claude Code
+
 - Open Command Palette: `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Win/Linux)
 - Search: "Claude Code: Open MCP Settings"
 - Paste config from: `claude-code.json`
@@ -22,16 +31,19 @@ This directory contains example configuration files for different AI tools and p
 ### Claude Desktop
 
 **macOS:**
+
 ```
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
 **Windows:**
+
 ```
 %APPDATA%\Claude\claude_desktop_config.json
 ```
 
 **Linux:**
+
 ```
 ~/.config/Claude/claude_desktop_config.json
 ```
@@ -39,6 +51,7 @@ This directory contains example configuration files for different AI tools and p
 Use config from: `claude-desktop.json`
 
 ### Cursor IDE
+
 - Settings → MCP Servers → Add Server
 - Or use internal config (not file-based)
 - Reference: `cursor.json`
@@ -46,16 +59,24 @@ Use config from: `claude-desktop.json`
 ### Gemini CLI
 
 **Config location:**
+
 ```
 ~/.gemini/settings.json
 ```
 
-Or use command:
+Recommended command (ready for copy/paste):
+
 ```bash
 gemini mcp add supabase-db \
-  --command node \
-  --args /path/to/index.js \
-  --env POSTGRES_URL_NON_POOLING=postgresql://...
+  --command npx \
+  --args "-y mcp-supabase-db" \
+  --env POSTGRES_URL_NON_POOLING=postgresql://user:password@host:5432/database \
+  --env SUPABASE_URL=https://your-project.supabase.co \
+  --env SUPABASE_SERVICE_ROLE_KEY=service-role-key \
+  --env SUPABASE_ACCESS_TOKEN=dashboard-or-personal-access-token \
+  --env SUPABASE_PROJECT_ID=project-ref \
+  --env OPENAI_API_KEY=sk-... \
+  --env MCP_MODE=tools
 ```
 
 Use config from: `gemini-cli.json`
@@ -63,6 +84,7 @@ Use config from: `gemini-cli.json`
 ### Cline (VS Code)
 
 **Config location:**
+
 ```
 ./cline_mcp_settings.json (workspace root)
 ```
@@ -74,10 +96,12 @@ Use config from: `cline.json`
 ### Roo Code (VS Code)
 
 **Global config:**
+
 - macOS/Linux: `~/.config/Code/User/mcp_settings.json`
 - Windows: `%APPDATA%\Code\User\mcp_settings.json`
 
 **Project config:**
+
 ```
 .roo/mcp.json (workspace root)
 ```
@@ -87,6 +111,7 @@ Use config from: `roo-code.json`
 ### Windsurf IDE
 
 **Config location:**
+
 - macOS: `~/.codeium/windsurf/mcp_config.json`
 - Windows: `%USERPROFILE%\.codeium\windsurf\mcp_config.json`
 - Linux: `~/.codeium/windsurf/mcp_config.json`
@@ -96,6 +121,7 @@ Use config from: `windsurf.json`
 ### OpenAI Codex
 
 **Config location:**
+
 ```
 ~/.codex/config.toml
 ```
@@ -107,6 +133,7 @@ Use config from: `codex.toml`
 ### JetBrains IDEs
 
 **Config location (varies by IDE):**
+
 - macOS: `~/Library/Application Support/JetBrains/[IDE]/[version]/mcp-settings.json`
 - Windows: `%APPDATA%\JetBrains\[IDE][version]\mcp-settings.json`
 - Linux: `~/.config/JetBrains/[IDE][version]/mcp-settings.json`
@@ -119,55 +146,52 @@ Use config from: `jetbrains.json`
 
 ## Important Notes
 
-### Update the Path
-All examples use:
-```
-/absolute/path/to/mcp-servers/supabase-db/index.js
-```
+### Update the Path (if you don't use `npx`)
 
-**You must change this to your actual path!**
+Every example defaults to `npx mcp-supabase-db`, which resolves the binary for you.
 
-**Find your path:**
+If you prefer running the built file directly, replace the `command/args` block with your absolute path. Use the snippet below to discover it:
+
 ```bash
 # macOS/Linux
-cd /path/to/mcp-servers/supabase-db
+cd /path/to/mcp-servers/packages/supabase-db
 pwd
-# Copy the output and append /index.js
 
-# Windows
-cd C:\path\to\mcp-servers\supabase-db
-cd
-# Copy the output and append \index.js (or use forward slashes)
+# Windows (PowerShell)
+Resolve-Path .\packages\supabase-db
 ```
+
+Append `/index.js` (or `\index.js`) if you go this route.
 
 ### Environment Variables
 
-**Option 1: In config (explicit)**
+The bundled files already include the recommended Supabase + OpenAI variables:
+
 ```json
 "env": {
-  "POSTGRES_URL_NON_POOLING": "postgresql://actual-connection-string"
+  "POSTGRES_URL_NON_POOLING": "postgresql://user:password@host:5432/database",
+  "SUPABASE_URL": "https://your-project.supabase.co",
+  "SUPABASE_SERVICE_ROLE_KEY": "service-role-key",
+  "SUPABASE_ACCESS_TOKEN": "dashboard-or-personal-access-token",
+  "SUPABASE_PROJECT_ID": "project-ref",
+  "OPENAI_API_KEY": "sk-...",
+  "MCP_MODE": "tools"
 }
 ```
 
-**Option 2: From .env file (automatic)**
-If `.env` exists in repo root, server loads it automatically.
-You can omit the `env` object or use a variable reference:
-```json
-"env": {
-  "POSTGRES_URL_NON_POOLING": "${POSTGRES_URL_NON_POOLING}"
-}
-```
-(Variable substitution support varies by platform)
+Still want to load from `.env`? Set `MCP_SUPABASE_ROOT` to the folder that contains your `.env` file and remove the sensitive values from the config.
 
 ### Get Your Connection String
 
 **Supabase Dashboard:**
+
 1. Project Settings → Database
 2. Copy "Connection string"
 3. **Important:** Use "Session" mode or "Direct connection"
 4. **Don't use:** "Transaction" mode (PgBouncer) - it doesn't support some operations
 
 Format:
+
 ```
 postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
 ```
@@ -186,6 +210,7 @@ After adding the config:
 If it doesn't work:
 
 1. **Run validator:**
+
    ```bash
    node validate-config.js
    ```
@@ -205,16 +230,19 @@ If it doesn't work:
 Instead of manual configuration, use the auto-installer:
 
 **macOS/Linux:**
+
 ```bash
 ./install.sh
 ```
 
 **Windows:**
+
 ```powershell
 .\install.ps1
 ```
 
 The installer will:
+
 - Detect installed AI tools
 - Prompt for connection string
 - Automatically configure each tool

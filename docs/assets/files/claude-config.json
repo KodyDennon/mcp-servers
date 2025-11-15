@@ -1,14 +1,16 @@
 {
   "mcpServers": {
     "supabase-db": {
-      "command": "supabase-db-mcp",
+      "command": "npx",
+      "args": ["-y", "mcp-supabase-db"],
       "env": {
-        "POSTGRES_URL_NON_POOLING": "postgresql://user:pass@host:5432/db",
+        "POSTGRES_URL_NON_POOLING": "postgresql://user:password@host:5432/database",
         "SUPABASE_URL": "https://your-project.supabase.co",
-        "SUPABASE_SERVICE_ROLE_KEY": "supabase-service-role",
-        "SUPABASE_ACCESS_TOKEN": "supabase-access-token",
-        "SUPABASE_PROJECT_ID": "project-id",
-        "OPENAI_API_KEY": "sk-your-key"
+        "SUPABASE_SERVICE_ROLE_KEY": "service-role-key",
+        "SUPABASE_ACCESS_TOKEN": "dashboard-or-personal-access-token",
+        "SUPABASE_PROJECT_ID": "project-ref",
+        "OPENAI_API_KEY": "sk-...",
+        "MCP_SUPABASE_ROOT": "/absolute/path/with/credentials"
       }
     }
   }

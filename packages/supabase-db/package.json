@@ -12,6 +12,7 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "src/**/*.ts",
+    "examples/**/*",
     "README.md",
     "CHANGELOG.md",
     "CODE_EXECUTION_GUIDE.md",

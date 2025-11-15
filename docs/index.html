@@ -518,7 +518,18 @@ OPENAI_API_KEY="sk-..."</code></pre>
             <div class="step__number">03</div>
             <h3 class="step__title">Connect Your AI Tool</h3>
             <p class="step__description">
-              Add the server to Claude Desktop, Cursor, or your MCP client
+              Add the server to Claude Desktop, Cursor, Gemini CLI, or OpenAI
+              Codex. After installing, your agent can copy configs from
+              <code>node_modules/mcp-supabase-db/examples</code> (or
+              <code>$(npm root -g)/mcp-supabase-db/examples</code> for global
+              installs).
+            </p>
+            <p class="step__description">
+              Top client files:
+              <br />• Claude Desktop → <code>claude-desktop.json</code> <br />•
+              Cursor IDE → <code>cursor.json</code> <br />• Gemini CLI →
+              <code>gemini-cli.json</code> <br />• OpenAI Codex →
+              <code>codex.toml</code>
             </p>
             <div class="button-row">
               <a class="button tertiary" href="./servers/supabase-db/">
@@ -534,10 +545,71 @@ OPENAI_API_KEY="sk-..."</code></pre>
               </a>
               <a
                 class="button tertiary"
+                href="./servers/supabase-db/#client-configs"
+              >
+                Client Instructions
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M6 3L11 8L6 13" />
+                </svg>
+              </a>
+              <a
+                class="button tertiary"
                 href="./assets/files/claude-config.json"
                 download
               >
-                Download Config
+                Claude Desktop Config
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M8 2v10M4 8l4 4 4-4M2 14h12" />
+                </svg>
+              </a>
+            </div>
+            <div class="button-row">
+              <a
+                class="button tertiary"
+                href="./assets/files/cursor-config.json"
+                download
+              >
+                Cursor Config
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M8 2v10M4 8l4 4 4-4M2 14h12" />
+                </svg>
+              </a>
+              <a
+                class="button tertiary"
+                href="./assets/files/gemini-config.json"
+                download
+              >
+                Gemini CLI Config
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                >
+                  <path d="M8 2v10M4 8l4 4 4-4M2 14h12" />
+                </svg>
+              </a>
+              <a
+                class="button tertiary"
+                href="./assets/files/codex-config.toml"
+                download
+              >
+                Codex Config
                 <svg
                   width="16"
                   height="16"
