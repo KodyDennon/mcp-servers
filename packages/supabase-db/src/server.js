@@ -5,7 +5,7 @@ import { registerHandlers } from "./handlers.js";
 import { registerCodeApiHandlers } from "./code-api-handler.js";
 import { loadConfig, ensureEnvironment, promptForMode } from "./config.js";
 
-const SERVER_VERSION = "3.2.0";
+const SERVER_VERSION = "3.2.5";
 const SERVER_NAME = "supabase-db";
 
 /**
