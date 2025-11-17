@@ -8,7 +8,7 @@ import { InspectorManager } from "./inspector/index.js";
 import { AutomationManager } from "./automation/automationManager.js";
 
 const SERVER_NAME = "ios-simulator";
-const SERVER_VERSION = "0.1.0";
+const SERVER_VERSION = "0.2.0";
 
 export function createServer() {
   return new Server(
