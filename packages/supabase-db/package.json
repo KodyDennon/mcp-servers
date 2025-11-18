@@ -5,10 +5,12 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "supabase-db-mcp": "index.js"
+    "supabase-db-mcp": "index.js",
+    "supabase-db-setup": "setup.js"
   },
   "files": [
     "index.js",
+    "setup.js",
     "src/**/*.js",
     "src/**/*.d.ts",
     "src/**/*.ts",
@@ -19,7 +21,9 @@
     "CODE_EXECUTION_ANALYSIS.md",
     "IMPLEMENTATION_COMPLETE.md",
     "RELEASE_NOTES_v3.0.0.md",
-    "LICENSE"
+    "LICENSE",
+    "Dockerfile",
+    ".dockerignore"
   ],
   "scripts": {
     "start": "node index.js",

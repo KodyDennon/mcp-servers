@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  # Supabase DB MCP Server
+  supabase-db:
+    build:
+      context: .
+      dockerfile: packages/supabase-db/Dockerfile
+    container_name: mcp-supabase-db
+    restart: unless-stopped
+    environment:
+      # Required: PostgreSQL connection URL
+      - POSTGRES_URL_NON_POOLING=${POSTGRES_URL_NON_POOLING}
+
+      # Optional: Supabase-specific
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-}
+
+      # Optional: MCP mode (direct or code-api)
+      - MCP_MODE=${MCP_MODE:-direct}
+
+      # Optional: Node environment
+      - NODE_ENV=production
+    volumes:
+      # Mount .env file for easy configuration
+      - ./.env:/app/packages/supabase-db/.env:ro
+    stdin_open: true
+    tty: true
+    networks:
+      - mcp-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # iOS Simulator MCP Server (macOS only)
+  ios-simulator:
+    build:
+      context: .
+      dockerfile: packages/ios-simulator/Dockerfile
+    container_name: mcp-ios-simulator
+    restart: unless-stopped
+    environment:
+      # Required: Paths to iOS tools
+      - IOS_WEBKIT_PROXY_BINARY=${IOS_WEBKIT_PROXY_BINARY:-/usr/local/bin/ios_webkit_debug_proxy}
+      - WEBDRIVERAGENT_PROJECT_PATH=${WEBDRIVERAGENT_PROJECT_PATH:-}
+
+      # Optional: Node environment
+      - NODE_ENV=production
+    volumes:
+      # Mount .env file for easy configuration
+      - ./.env:/app/packages/ios-simulator/.env:ro
+
+      # Mount simulator access (macOS only)
+      # Note: This requires special Docker Desktop configuration on macOS
+      - /Users:/Users:ro
+    stdin_open: true
+    tty: true
+    networks:
+      - mcp-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Only run on macOS
+    platform: linux/amd64
+    profiles:
+      - macos-only
+
+networks:
+  mcp-network:
+    driver: bridge
+
+# Volume for persistent data (optional)
+volumes:
+  mcp-data:
+    driver: local

@@ -3,7 +3,8 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "node",
-    "lib": ["ES2022", "DOM"],
+    "lib": ["ES2022"],
+    "types": ["node"],
     "strict": true,
     "allowJs": true,
     "esModuleInterop": true,
@@ -13,9 +14,13 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "outDir": "./",
     "allowSyntheticDefaultImports": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "noEmit": false,
+    "noEmitOnError": false,
+    "isolatedModules": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "tests"]
+  "exclude": ["node_modules", "tests", "**/*.test.ts", "**/*.spec.ts"]
 }
