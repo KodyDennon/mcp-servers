@@ -11,15 +11,16 @@ import { withErrorHandler } from "./errorHandler.js";
  * @returns {object} Wrapped handlers
  */
 export function wrapToolHandlers(handlers) {
-  const wrapped = {};
-  for (const [name, handler] of Object.entries(handlers)) {
-    if (typeof handler === "function") {
-      wrapped[name] = withErrorHandler(handler, { tool: name });
-    } else {
-      wrapped[name] = handler;
+    const wrapped = {};
+    for (const [name, handler] of Object.entries(handlers)) {
+        if (typeof handler === "function") {
+            wrapped[name] = withErrorHandler(handler, { tool: name });
+        }
+        else {
+            wrapped[name] = handler;
+        }
     }
-  }
-  return wrapped;
+    return wrapped;
 }
 /**
  * Create a safe tool handler that wraps the original with error handling
@@ -29,15 +30,12 @@ export function wrapToolHandlers(handlers) {
  * @returns {function} Wrapped handler
  */
 export function createSafeHandler(originalHandler, toolName) {
-  return async (input, connectionManager) => {
-    const handler = withErrorHandler(
-      async () => {
-        return await originalHandler(input, connectionManager);
-      },
-      { tool: toolName },
-    );
-    return handler();
-  };
+    return async (input, connectionManager) => {
+        const handler = withErrorHandler(async () => {
+            return await originalHandler(input, connectionManager);
+        }, { tool: toolName });
+        return handler();
+    };
 }
 /**
  * Wrap an entire tool module with error handling
@@ -47,19 +45,16 @@ export function createSafeHandler(originalHandler, toolName) {
  * @returns {object} Module with wrapped handler
  */
 export function wrapToolModule(module, handlerName = "handler") {
-  const wrappedModule = { ...module };
-  if (module[handlerName] && typeof module[handlerName] === "function") {
-    const originalHandler = module[handlerName];
-    wrappedModule[handlerName] = async (toolName, input, connectionManager) => {
-      const safeHandler = withErrorHandler(
-        async () => {
-          return await originalHandler(toolName, input, connectionManager);
-        },
-        { tool: toolName, handler: handlerName },
-      );
-      return safeHandler();
-    };
-  }
-  return wrappedModule;
+    const wrappedModule = { ...module };
+    if (module[handlerName] && typeof module[handlerName] === "function") {
+        const originalHandler = module[handlerName];
+        wrappedModule[handlerName] = async (toolName, input, connectionManager) => {
+            const safeHandler = withErrorHandler(async () => {
+                return await originalHandler(toolName, input, connectionManager);
+            }, { tool: toolName, handler: handlerName });
+            return safeHandler();
+        };
+    }
+    return wrappedModule;
 }
 //# sourceMappingURL=toolWrapper.js.map

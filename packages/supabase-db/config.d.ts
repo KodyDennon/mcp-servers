@@ -17,21 +17,19 @@ export function interactiveSetup(variables?: string[]): Promise<void>;
 /**
  * Ensure required environment variables are present before starting the server
  */
-export function ensureEnvironment({
-  allowInteractive,
-}?: {
-  allowInteractive?: boolean | undefined;
+export function ensureEnvironment({ allowInteractive }?: {
+    allowInteractive?: boolean | undefined;
 }): Promise<void>;
 /**
  * Get the path to the .env file
  */
-export function getEnvPath(): any;
+export function getEnvPath(): string;
 /**
  * Check if .env file exists
  */
-export function envFileExists(): Promise<any>;
+export function envFileExists(): Promise<boolean>;
 /**
  * Interactively prompt the user to select MCP mode if not already set
  */
-export function promptForMode(): Promise<any>;
+export function promptForMode(): Promise<string>;
 //# sourceMappingURL=config.d.ts.map

@@ -2,7 +2,7 @@
  * Streaming query execution for large datasets
  * Process data in chunks to avoid memory issues
  */
-import { getConnectionManager } from "./init.js";
+import { getConnectionManager } from './init.js';
 /**
  * Stream query results in batches
  *
@@ -13,41 +13,41 @@ import { getConnectionManager } from "./init.js";
  * }
  */
 export async function* streamQuery(sql, options = {}) {
-  const { batchSize = 100, maxRows = Infinity } = options;
-  const connectionManager = getConnectionManager();
-  const pool = connectionManager.getConnection();
-  const client = await pool.connect();
-  try {
-    // Use a cursor for streaming
-    const cursorName = `cursor_${Date.now()}`;
-    await client.query("BEGIN");
-    await client.query(`DECLARE ${cursorName} CURSOR FOR ${sql}`);
-    let totalRows = 0;
-    let batch;
-    do {
-      const result = await client.query(
-        `FETCH ${batchSize} FROM ${cursorName}`,
-      );
-      batch = result.rows;
-      if (batch.length > 0) {
-        totalRows += batch.length;
-        // Check if we've hit maxRows
-        if (totalRows > maxRows) {
-          batch = batch.slice(0, maxRows - (totalRows - batch.length));
-          yield batch;
-          break;
-        }
-        yield batch;
-      }
-    } while (batch.length === batchSize);
-    await client.query(`CLOSE ${cursorName}`);
-    await client.query("COMMIT");
-  } catch (error) {
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
-  }
+    const { batchSize = 100, maxRows = Infinity } = options;
+    const connectionManager = getConnectionManager();
+    const pool = connectionManager.getConnection();
+    const client = await pool.connect();
+    try {
+        // Use a cursor for streaming
+        const cursorName = `cursor_${Date.now()}`;
+        await client.query('BEGIN');
+        await client.query(`DECLARE ${cursorName} CURSOR FOR ${sql}`);
+        let totalRows = 0;
+        let batch;
+        do {
+            const result = await client.query(`FETCH ${batchSize} FROM ${cursorName}`);
+            batch = result.rows;
+            if (batch.length > 0) {
+                totalRows += batch.length;
+                // Check if we've hit maxRows
+                if (totalRows > maxRows) {
+                    batch = batch.slice(0, maxRows - (totalRows - batch.length));
+                    yield batch;
+                    break;
+                }
+                yield batch;
+            }
+        } while (batch.length === batchSize);
+        await client.query(`CLOSE ${cursorName}`);
+        await client.query('COMMIT');
+    }
+    catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    }
+    finally {
+        client.release();
+    }
 }
 /**
  * Stream and aggregate results on-the-fly
@@ -63,17 +63,12 @@ export async function* streamQuery(sql, options = {}) {
  *   { count: 0, total: 0 }
  * );
  */
-export async function streamAggregate(
-  sql,
-  aggregator,
-  initialValue,
-  options = {},
-) {
-  let accumulator = initialValue;
-  for await (const batch of streamQuery(sql, options)) {
-    accumulator = aggregator(batch, accumulator);
-  }
-  return accumulator;
+export async function streamAggregate(sql, aggregator, initialValue, options = {}) {
+    let accumulator = initialValue;
+    for await (const batch of streamQuery(sql, options)) {
+        accumulator = aggregator(batch, accumulator);
+    }
+    return accumulator;
 }
 /**
  * Stream and transform results
@@ -87,9 +82,9 @@ export async function streamAggregate(
  * }
  */
 export async function* streamTransform(sql, transformer, options = {}) {
-  for await (const batch of streamQuery(sql, options)) {
-    yield transformer(batch);
-  }
+    for await (const batch of streamQuery(sql, options)) {
+        yield transformer(batch);
+    }
 }
 /**
  * Count rows without loading all data
@@ -98,10 +93,10 @@ export async function* streamTransform(sql, transformer, options = {}) {
  * const total = await streamCount('SELECT * FROM large_table WHERE active = true');
  */
 export async function streamCount(sql, options = {}) {
-  let count = 0;
-  for await (const batch of streamQuery(sql, options)) {
-    count += batch.length;
-  }
-  return count;
+    let count = 0;
+    for await (const batch of streamQuery(sql, options)) {
+        count += batch.length;
+    }
+    return count;
 }
 //# sourceMappingURL=streaming.js.map

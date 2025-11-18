@@ -8,43 +8,43 @@
  * const growth = await getActiveUserGrowth(7);
  */
 // User Analytics
-export * from "./userAnalytics.js";
+export * from './userAnalytics.js';
 // Data Quality
-export * from "./dataQuality.js";
+export * from './dataQuality.js';
 // Reporting
-export * from "./reporting.js";
+export * from './reporting.js';
 // Skill metadata
 export const SKILLS = {
-  userAnalytics: {
-    name: "User Analytics",
-    description: "Common patterns for analyzing user data",
-    functions: [
-      "getActiveUserGrowth",
-      "getUserRetention",
-      "getUserEngagement",
-      "getUserSegments",
-    ],
-  },
-  dataQuality: {
-    name: "Data Quality",
-    description: "Common patterns for data validation and cleaning",
-    functions: [
-      "findDuplicates",
-      "findNullValues",
-      "getColumnStats",
-      "validateEmails",
-      "findOutliers",
-    ],
-  },
-  reporting: {
-    name: "Reporting",
-    description: "Common patterns for generating reports",
-    functions: [
-      "getDailySummary",
-      "getTopN",
-      "getTimeSeries",
-      "getCohortReport",
-    ],
-  },
+    userAnalytics: {
+        name: 'User Analytics',
+        description: 'Common patterns for analyzing user data',
+        functions: [
+            'getActiveUserGrowth',
+            'getUserRetention',
+            'getUserEngagement',
+            'getUserSegments',
+        ],
+    },
+    dataQuality: {
+        name: 'Data Quality',
+        description: 'Common patterns for data validation and cleaning',
+        functions: [
+            'findDuplicates',
+            'findNullValues',
+            'getColumnStats',
+            'validateEmails',
+            'findOutliers',
+        ],
+    },
+    reporting: {
+        name: 'Reporting',
+        description: 'Common patterns for generating reports',
+        functions: [
+            'getDailySummary',
+            'getTopN',
+            'getTimeSeries',
+            'getCohortReport',
+        ],
+    },
 };
 //# sourceMappingURL=index.js.map

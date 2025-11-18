@@ -2,7 +2,7 @@
  * Streaming query execution for large datasets
  * Process data in chunks to avoid memory issues
  */
-import type { StreamOptions } from "./types.js";
+import type { StreamOptions } from './types.js';
 /**
  * Stream query results in batches
  *
@@ -12,10 +12,7 @@ import type { StreamOptions } from "./types.js";
  *   // Process batch without loading all data into memory
  * }
  */
-export declare function streamQuery(
-  sql: string,
-  options?: StreamOptions,
-): AsyncGenerator<Record<string, any>[], void, unknown>;
+export declare function streamQuery(sql: string, options?: StreamOptions): AsyncGenerator<Record<string, any>[], void, unknown>;
 /**
  * Stream and aggregate results on-the-fly
  *
@@ -30,12 +27,7 @@ export declare function streamQuery(
  *   { count: 0, total: 0 }
  * );
  */
-export declare function streamAggregate<T, A>(
-  sql: string,
-  aggregator: (batch: Record<string, any>[], accumulator: A) => A,
-  initialValue: A,
-  options?: StreamOptions,
-): Promise<A>;
+export declare function streamAggregate<T, A>(sql: string, aggregator: (batch: Record<string, any>[], accumulator: A) => A, initialValue: A, options?: StreamOptions): Promise<A>;
 /**
  * Stream and transform results
  *
@@ -47,19 +39,12 @@ export declare function streamAggregate<T, A>(
  *   console.log(transformed);
  * }
  */
-export declare function streamTransform<T>(
-  sql: string,
-  transformer: (batch: Record<string, any>[]) => T[],
-  options?: StreamOptions,
-): AsyncGenerator<T[], void, unknown>;
+export declare function streamTransform<T>(sql: string, transformer: (batch: Record<string, any>[]) => T[], options?: StreamOptions): AsyncGenerator<T[], void, unknown>;
 /**
  * Count rows without loading all data
  *
  * @example
  * const total = await streamCount('SELECT * FROM large_table WHERE active = true');
  */
-export declare function streamCount(
-  sql: string,
-  options?: StreamOptions,
-): Promise<number>;
+export declare function streamCount(sql: string, options?: StreamOptions): Promise<number>;
 //# sourceMappingURL=streaming.d.ts.map

@@ -55,13 +55,13 @@ export async function getTableSchema(tableName: string): Promise<TableSchema> {
 
     return {
       tableName,
-      columns: columnsResult.rows.map(col => ({
+      columns: columnsResult.rows.map((col: any) => ({
         name: col.column_name,
         type: col.data_type,
         nullable: col.is_nullable === 'YES',
         default: col.column_default,
       })),
-      constraints: constraintsResult.rows.map(con => ({
+      constraints: constraintsResult.rows.map((con: any) => ({
         name: con.constraint_name,
         type: con.constraint_type,
         definition: con.definition,

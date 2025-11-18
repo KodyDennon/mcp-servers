@@ -2,9 +2,9 @@
  * Initialization module for Code API
  * Handles singleton instances and initialization
  */
-import { ConnectionManager } from "../connectionManager.js";
-import { QueryCache } from "./cache.js";
-import { PrivacyFilter } from "./privacy.js";
+import { ConnectionManager } from '../connectionManager.js';
+import { QueryCache } from './cache.js';
+import { PrivacyFilter } from './privacy.js';
 /**
  * Initialize the code API with a connection manager
  */
