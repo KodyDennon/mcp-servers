@@ -1,7 +1,7 @@
 /**
  * Migration operations for code execution mode
  */
-import type { MigrationOptions } from "./types.js";
+import type { MigrationOptions } from './types.js';
 /**
  * Run a migration
  */

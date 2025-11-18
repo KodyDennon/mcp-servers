@@ -2,41 +2,37 @@
  * Data Quality Skills
  * Common patterns for data validation and cleaning
  */
-import { query } from "../query.js";
-import { DataPipeline } from "../pipeline.js";
+import { query } from '../query.js';
+import { DataPipeline } from '../pipeline.js';
 /**
  * Find duplicate rows in a table
  */
 export async function findDuplicates(tableName, columns) {
-  const columnsList = columns.map((c) => `"${c}"`).join(", ");
-  const sql = `
+    const columnsList = columns.map(c => `"${c}"`).join(', ');
+    const sql = `
     SELECT ${columnsList}, COUNT(*) as duplicate_count
     FROM "${tableName}"
     GROUP BY ${columnsList}
     HAVING COUNT(*) > 1
     ORDER BY duplicate_count DESC
   `;
-  const result = await query({ sql });
-  return result.rows;
+    const result = await query({ sql });
+    return result.rows;
 }
 /**
  * Find NULL values in specified columns
  */
 export async function findNullValues(tableName, columns) {
-  const nullChecks = columns
-    .map(
-      (col) => `COUNT(CASE WHEN "${col}" IS NULL THEN 1 END) as "${col}_nulls"`,
-    )
-    .join(", ");
-  const sql = `SELECT ${nullChecks} FROM "${tableName}"`;
-  const result = await query({ sql });
-  return result.rows[0];
+    const nullChecks = columns.map(col => `COUNT(CASE WHEN "${col}" IS NULL THEN 1 END) as "${col}_nulls"`).join(', ');
+    const sql = `SELECT ${nullChecks} FROM "${tableName}"`;
+    const result = await query({ sql });
+    return result.rows[0];
 }
 /**
  * Get column statistics
  */
 export async function getColumnStats(tableName, columnName) {
-  const sql = `
+    const sql = `
     SELECT
       COUNT(*) as total_rows,
       COUNT("${columnName}") as non_null_rows,
@@ -44,14 +40,14 @@ export async function getColumnStats(tableName, columnName) {
       COUNT(CASE WHEN "${columnName}" IS NULL THEN 1 END) as null_count
     FROM "${tableName}"
   `;
-  const result = await query({ sql });
-  return result.rows[0];
+    const result = await query({ sql });
+    return result.rows[0];
 }
 /**
  * Validate email format in a table
  */
 export async function validateEmails(tableName) {
-  const sql = `
+    const sql = `
     SELECT email,
       CASE
         WHEN email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
@@ -61,20 +57,20 @@ export async function validateEmails(tableName) {
     FROM "${tableName}"
     WHERE email IS NOT NULL
   `;
-  const result = await query({ sql, privacy: "tokenize" });
-  return new DataPipeline(result.rows)
-    .groupBy("status")
-    .aggregate((emails) => ({
-      count: emails.length,
-      sample: emails.slice(0, 5).map((e) => e.email),
+    const result = await query({ sql, privacy: 'tokenize' });
+    return new DataPipeline(result.rows)
+        .groupBy('status')
+        .aggregate(emails => ({
+        count: emails.length,
+        sample: emails.slice(0, 5).map((e) => e.email),
     }))
-    .result();
+        .result();
 }
 /**
  * Find outliers in numeric column
  */
 export async function findOutliers(tableName, columnName, threshold = 3) {
-  const sql = `
+    const sql = `
     WITH stats AS (
       SELECT
         AVG("${columnName}") as mean,
@@ -87,7 +83,7 @@ export async function findOutliers(tableName, columnName, threshold = 3) {
     FROM "${tableName}" t, stats s
     WHERE ABS((t."${columnName}" - s.mean) / s.stddev) > ${threshold}
   `;
-  const result = await query({ sql });
-  return result.rows;
+    const result = await query({ sql });
+    return result.rows;
 }
 //# sourceMappingURL=dataQuality.js.map

@@ -411,6 +411,7 @@ describe("Health Monitor", () => {
 
   test("should check environment configuration", async () => {
     process.env.POSTGRES_URL_NON_POOLING = "postgresql://test";
+    process.env.MCP_MODE = "direct";
 
     const result = await healthMonitor.checkEnvironment();
 
@@ -418,6 +419,7 @@ describe("Health Monitor", () => {
     expect(result.status).toBe(HealthStatus.HEALTHY);
 
     delete process.env.POSTGRES_URL_NON_POOLING;
+    delete process.env.MCP_MODE;
   });
 
   test("should detect missing environment variables", async () => {

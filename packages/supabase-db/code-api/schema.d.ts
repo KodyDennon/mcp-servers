@@ -1,7 +1,7 @@
 /**
  * Schema operations for code execution mode
  */
-import type { TableSchema, CreateTableOptions, IndexOptions } from "./types.js";
+import type { TableSchema, CreateTableOptions, IndexOptions } from './types.js';
 /**
  * List all tables in the database
  */
@@ -17,29 +17,18 @@ export declare function createTable(options: CreateTableOptions): Promise<void>;
 /**
  * Drop a table
  */
-export declare function dropTable(
-  tableName: string,
-  cascade?: boolean,
-): Promise<void>;
+export declare function dropTable(tableName: string, cascade?: boolean): Promise<void>;
 /**
  * Add a column to a table
  */
-export declare function addColumn(
-  tableName: string,
-  columnName: string,
-  columnType: string,
-  options?: {
+export declare function addColumn(tableName: string, columnName: string, columnType: string, options?: {
     nullable?: boolean;
     defaultValue?: any;
-  },
-): Promise<void>;
+}): Promise<void>;
 /**
  * Drop a column from a table
  */
-export declare function dropColumn(
-  tableName: string,
-  columnName: string,
-): Promise<void>;
+export declare function dropColumn(tableName: string, columnName: string): Promise<void>;
 /**
  * Create an index
  */

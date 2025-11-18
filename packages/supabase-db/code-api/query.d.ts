@@ -1,12 +1,7 @@
 /**
  * Query operations for code execution mode
  */
-import type {
-  QueryOptions,
-  QueryResult,
-  TransactionOptions,
-  TransactionResult,
-} from "./types.js";
+import type { QueryOptions, QueryResult, TransactionOptions, TransactionResult } from './types.js';
 /**
  * Execute a SQL query
  *
@@ -30,9 +25,7 @@ export declare function query(options: QueryOptions): Promise<QueryResult>;
  *   ]
  * });
  */
-export declare function transaction(
-  options: TransactionOptions,
-): Promise<TransactionResult>;
+export declare function transaction(options: TransactionOptions): Promise<TransactionResult>;
 /**
  * Get query execution plan
  *
@@ -41,7 +34,9 @@ export declare function transaction(
  *   sql: 'SELECT * FROM users WHERE active = true'
  * });
  */
-export declare function explain(options: { sql: string }): Promise<{
-  plan: string;
+export declare function explain(options: {
+    sql: string;
+}): Promise<{
+    plan: string;
 }>;
 //# sourceMappingURL=query.d.ts.map

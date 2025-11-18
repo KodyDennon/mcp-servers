@@ -27,7 +27,12 @@ export const PluginHook = {
  * All plugins must extend this class
  */
 export class Plugin {
-  constructor(options = {}) {
+  name: string;
+  version: string;
+  enabled: boolean;
+  options: any;
+
+  constructor(options: any = {}) {
     this.name = this.constructor.name;
     this.version = options.version || "1.0.0";
     this.enabled = options.enabled !== false;
@@ -37,14 +42,14 @@ export class Plugin {
   /**
    * Initialize plugin
    */
-  async init(context) {
+  async init(context: any): Promise<void> {
     // Override in subclass
   }
 
   /**
    * Cleanup plugin resources
    */
-  async destroy() {
+  async destroy(): Promise<void> {
     // Override in subclass
   }
 
@@ -65,6 +70,9 @@ export class Plugin {
  * Manages plugin lifecycle and hooks
  */
 export class PluginManager extends EventEmitter {
+  plugins: Map<string, Plugin>;
+  hooks: Map<string, Array<(context: any) => Promise<void> | void>>;
+
   constructor() {
     super();
     this.plugins = new Map();
@@ -79,7 +87,7 @@ export class PluginManager extends EventEmitter {
   /**
    * Register a plugin
    */
-  async registerPlugin(plugin) {
+  async registerPlugin(plugin: Plugin): Promise<void> {
     if (!(plugin instanceof Plugin)) {
       throw new MCPError(
         "VALIDATION_INVALID_INPUT",
@@ -111,7 +119,7 @@ export class PluginManager extends EventEmitter {
   /**
    * Unregister a plugin
    */
-  async unregisterPlugin(pluginName) {
+  async unregisterPlugin(pluginName: string): Promise<void> {
     const plugin = this.plugins.get(pluginName);
 
     if (!plugin) {
@@ -130,7 +138,7 @@ export class PluginManager extends EventEmitter {
   /**
    * Register a hook handler
    */
-  on(hook, handler) {
+  registerHook(hook: string, handler: (context: any) => Promise<void> | void): void {
     if (!Object.values(PluginHook).includes(hook)) {
       throw new MCPError("VALIDATION_INVALID_INPUT", "Unknown hook", {
         hook: hook,
@@ -138,13 +146,16 @@ export class PluginManager extends EventEmitter {
       });
     }
 
-    this.hooks.get(hook).push(handler);
+    const handlers = this.hooks.get(hook);
+    if (handlers) {
+      handlers.push(handler);
+    }
   }
 
   /**
    * Execute all handlers for a hook
    */
-  async executeHook(hook, context = {}) {
+  async executeHook(hook: string, context: any = {}): Promise<void> {
     const handlers = this.hooks.get(hook) || [];
 
     for (const handler of handlers) {
@@ -160,11 +171,11 @@ export class PluginManager extends EventEmitter {
   /**
    * Get context for plugins
    */
-  getContext() {
+  getContext(): any {
     return {
       pluginManager: this,
       emit: this.emit.bind(this),
-      on: this.on.bind(this),
+      on: this.registerHook.bind(this),
     };
   }
 
@@ -178,14 +189,14 @@ export class PluginManager extends EventEmitter {
   /**
    * Get plugin by name
    */
-  getPlugin(name) {
+  getPlugin(name: string): Plugin | undefined {
     return this.plugins.get(name);
   }
 
   /**
    * Enable a plugin
    */
-  async enablePlugin(name) {
+  async enablePlugin(name: string): Promise<void> {
     const plugin = this.getPlugin(name);
 
     if (!plugin) {
@@ -206,7 +217,7 @@ export class PluginManager extends EventEmitter {
   /**
    * Disable a plugin
    */
-  async disablePlugin(name) {
+  async disablePlugin(name: string): Promise<void> {
     const plugin = this.getPlugin(name);
 
     if (!plugin) {
@@ -227,7 +238,7 @@ export class PluginManager extends EventEmitter {
   /**
    * Shutdown all plugins
    */
-  async shutdown() {
+  async shutdown(): Promise<void> {
     console.error("Shutting down all plugins...");
 
     for (const plugin of this.plugins.values()) {
@@ -247,17 +258,20 @@ export class PluginManager extends EventEmitter {
  * Example Plugin: Query Logger
  */
 export class QueryLoggerPlugin extends Plugin {
-  constructor(options = {}) {
+  queries: Array<any>;
+  maxQueries: number;
+
+  constructor(options: any = {}) {
     super(options);
     this.queries = [];
     this.maxQueries = options.maxQueries || 100;
   }
 
-  async init(context) {
+  async init(context: any): Promise<void> {
     context.on(PluginHook.AFTER_QUERY, this.logQuery.bind(this));
   }
 
-  async logQuery(context) {
+  async logQuery(context: any): Promise<void> {
     this.queries.push({
       sql: context.sql,
       duration: context.duration,
@@ -273,7 +287,7 @@ export class QueryLoggerPlugin extends Plugin {
     return this.queries;
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     this.queries = [];
   }
 }
@@ -282,17 +296,20 @@ export class QueryLoggerPlugin extends Plugin {
  * Example Plugin: Performance Monitor
  */
 export class PerformanceMonitorPlugin extends Plugin {
-  constructor(options = {}) {
+  threshold: number;
+  slowQueries: Array<any>;
+
+  constructor(options: any = {}) {
     super(options);
     this.threshold = options.threshold || 1000; // 1 second
     this.slowQueries = [];
   }
 
-  async init(context) {
+  async init(context: any): Promise<void> {
     context.on(PluginHook.AFTER_QUERY, this.checkPerformance.bind(this));
   }
 
-  async checkPerformance(context) {
+  async checkPerformance(context: any): Promise<void> {
     if (context.duration >= this.threshold) {
       this.slowQueries.push({
         sql: context.sql,
@@ -308,7 +325,7 @@ export class PerformanceMonitorPlugin extends Plugin {
     return this.slowQueries;
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     this.slowQueries = [];
   }
 }
@@ -317,17 +334,20 @@ export class PerformanceMonitorPlugin extends Plugin {
  * Example Plugin: Error Tracker
  */
 export class ErrorTrackerPlugin extends Plugin {
-  constructor(options = {}) {
+  errors: Array<any>;
+  maxErrors: number;
+
+  constructor(options: any = {}) {
     super(options);
     this.errors = [];
     this.maxErrors = options.maxErrors || 100;
   }
 
-  async init(context) {
+  async init(context: any): Promise<void> {
     context.on(PluginHook.ON_ERROR, this.trackError.bind(this));
   }
 
-  async trackError(context) {
+  async trackError(context: any): Promise<void> {
     this.errors.push({
       error: context.error.message,
       stack: context.error.stack,
@@ -361,7 +381,7 @@ export class ErrorTrackerPlugin extends Plugin {
     };
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     this.errors = [];
   }
 }
@@ -370,18 +390,20 @@ export class ErrorTrackerPlugin extends Plugin {
  * Example Plugin: Query Cache Warmer
  */
 export class CacheWarmerPlugin extends Plugin {
-  constructor(options = {}) {
+  warmupQueries: Array<any>;
+
+  constructor(options: any = {}) {
     super(options);
     this.warmupQueries = options.warmupQueries || [];
   }
 
-  async init(context) {
+  async init(context: any): Promise<void> {
     if (context.queryCache && this.warmupQueries.length > 0) {
       await this.warmCache(context.queryCache);
     }
   }
 
-  async warmCache(queryCache) {
+  async warmCache(queryCache: any): Promise<void> {
     console.error(`Warming cache with ${this.warmupQueries.length} queries...`);
 
     for (const { sql, params } of this.warmupQueries) {
@@ -389,12 +411,13 @@ export class CacheWarmerPlugin extends Plugin {
         // This would need access to query executor
         console.error(`Warmed: ${sql.substring(0, 50)}...`);
       } catch (error) {
-        console.error(`Failed to warm cache: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`Failed to warm cache: ${errorMessage}`);
       }
     }
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     // Nothing to clean up
   }
 }
@@ -404,14 +427,16 @@ export class CacheWarmerPlugin extends Plugin {
  * Load plugins from filesystem
  */
 export class PluginLoader {
-  constructor(pluginManager) {
+  pluginManager: PluginManager;
+
+  constructor(pluginManager: PluginManager) {
     this.pluginManager = pluginManager;
   }
 
   /**
    * Load plugin from module
    */
-  async loadPlugin(pluginPath, options = {}) {
+  async loadPlugin(pluginPath: string, options: any = {}): Promise<Plugin> {
     try {
       const pluginModule = await import(pluginPath);
       const PluginClass = pluginModule.default || pluginModule;
@@ -421,9 +446,10 @@ export class PluginLoader {
 
       return plugin;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new MCPError(
         "PLUGIN_LOAD_FAILED",
-        `Failed to load plugin: ${error.message}`,
+        `Failed to load plugin: ${errorMessage}`,
         {
           pluginPath: pluginPath,
         },
@@ -434,7 +460,7 @@ export class PluginLoader {
   /**
    * Load multiple plugins
    */
-  async loadPlugins(pluginConfigs) {
+  async loadPlugins(pluginConfigs: Array<{ path: string; options?: any }>): Promise<Array<{ success: boolean; plugin?: string; error?: string }>> {
     const results = [];
 
     for (const config of pluginConfigs) {
@@ -442,7 +468,8 @@ export class PluginLoader {
         const plugin = await this.loadPlugin(config.path, config.options);
         results.push({ success: true, plugin: plugin.name });
       } catch (error) {
-        results.push({ success: false, error: error.message });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        results.push({ success: false, error: errorMessage });
       }
     }
 

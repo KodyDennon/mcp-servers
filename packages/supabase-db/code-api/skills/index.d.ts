@@ -7,24 +7,24 @@
  * import { getActiveUserGrowth } from './servers/supabase-db/skills/userAnalytics';
  * const growth = await getActiveUserGrowth(7);
  */
-export * from "./userAnalytics.js";
-export * from "./dataQuality.js";
-export * from "./reporting.js";
+export * from './userAnalytics.js';
+export * from './dataQuality.js';
+export * from './reporting.js';
 export declare const SKILLS: {
-  userAnalytics: {
-    name: string;
-    description: string;
-    functions: string[];
-  };
-  dataQuality: {
-    name: string;
-    description: string;
-    functions: string[];
-  };
-  reporting: {
-    name: string;
-    description: string;
-    functions: string[];
-  };
+    userAnalytics: {
+        name: string;
+        description: string;
+        functions: string[];
+    };
+    dataQuality: {
+        name: string;
+        description: string;
+        functions: string[];
+    };
+    reporting: {
+        name: string;
+        description: string;
+        functions: string[];
+    };
 };
 //# sourceMappingURL=index.d.ts.map

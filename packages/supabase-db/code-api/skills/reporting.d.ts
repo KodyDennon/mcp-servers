@@ -9,21 +9,11 @@ export declare function getDailySummary(date?: string): Promise<any>;
 /**
  * Generate top N report
  */
-export declare function getTopN(
-  tableName: string,
-  valueColumn: string,
-  groupBy: string,
-  n?: number,
-): Promise<any[]>;
+export declare function getTopN(tableName: string, valueColumn: string, groupBy: string, n?: number): Promise<any[]>;
 /**
  * Generate time series report
  */
-export declare function getTimeSeries(
-  tableName: string,
-  dateColumn: string,
-  valueColumn: string,
-  days?: number,
-): Promise<any[]>;
+export declare function getTimeSeries(tableName: string, dateColumn: string, valueColumn: string, days?: number): Promise<any[]>;
 /**
  * Generate cohort report (streaming for large datasets)
  */

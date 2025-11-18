@@ -13,10 +13,7 @@ export function wrapToolHandlers(handlers: object): object;
  * @param {string} toolName - Name of the tool for logging
  * @returns {function} Wrapped handler
  */
-export function createSafeHandler(
-  originalHandler: Function,
-  toolName: string,
-): Function;
+export function createSafeHandler(originalHandler: Function, toolName: string): Function;
 /**
  * Wrap an entire tool module with error handling
  *

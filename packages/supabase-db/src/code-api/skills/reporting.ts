@@ -101,7 +101,7 @@ export async function getTimeSeries(
 export async function getCohortReport(tableName: string): Promise<any> {
   return await streamAggregate(
     `SELECT * FROM "${tableName}" ORDER BY created_at`,
-    (batch, accumulator) => {
+    (batch, accumulator: Record<string, any>) => {
       const pipeline = new DataPipeline(batch);
 
       // Process batch and aggregate
