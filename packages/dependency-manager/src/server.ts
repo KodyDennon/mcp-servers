@@ -9,6 +9,7 @@ import { getDependencyAnalysisTools } from "./tools/analysisTools.js";
 import { getSecurityTools } from "./tools/securityTools.js";
 import { getLicenseTools } from "./tools/licenseTools.js";
 import { getUpdateTools } from "./tools/updateTools.js";
+import { getIntelligentTools } from "./tools/intelligentTools.js";
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +33,7 @@ export async function startServer() {
     ...getSecurityTools(),
     ...getLicenseTools(),
     ...getUpdateTools(),
+    ...getIntelligentTools(),
   ];
 
   // Handle list_tools request
@@ -68,6 +70,15 @@ export async function startServer() {
       if (name.startsWith("deps_check_") || name.startsWith("deps_suggest_")) {
         const { handleUpdateToolCall } = await import("./tools/updateTools.js");
         return await handleUpdateToolCall(name, args || {});
+      }
+
+      // Intelligent analysis tools
+      if (name.startsWith("deps_analyze_breaking") ||
+          name.startsWith("deps_analyze_intelligent") ||
+          name.startsWith("deps_find_alternatives") ||
+          name.startsWith("deps_analyze_graph")) {
+        const { handleIntelligentToolCall } = await import("./tools/intelligentTools.js");
+        return await handleIntelligentToolCall(name, args || {});
       }
 
       throw new Error(`Unknown tool: ${name}`);
