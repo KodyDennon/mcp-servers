@@ -31,6 +31,7 @@
     "dotenv": "^17.2.3",
     "zod": "^4.1.12",
     "axios": "^1.6.0",
+    "axios-retry": "^4.0.0",
     "semver": "^7.6.0",
     "pacote": "^17.0.0",
     "pino": "^8.19.0",
@@ -40,7 +41,10 @@
     "bottleneck": "^2.19.5",
     "conf": "^12.0.0",
     "nanoid": "^5.0.4",
-    "p-queue": "^8.0.1"
+    "p-queue": "^8.0.1",
+    "spdx-license-list": "^6.9.0",
+    "spdx-expression-parse": "^4.0.0",
+    "spdx-satisfies": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
