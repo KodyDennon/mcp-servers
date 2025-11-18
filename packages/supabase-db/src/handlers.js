@@ -60,6 +60,13 @@ import {
   handleEdgeFunctionToolCall,
 } from "./tools/edgeFunctionTools.js";
 import { rag, indexDirectory, indexUrl } from "./tools/aiTools.js";
+import {
+  healthCheckTool,
+  getConnectionStatsTool,
+  getRecoveryStatsTool,
+  resetCircuitBreakerTool,
+  handleMonitoringToolCall,
+} from "./tools/monitoringTools.js";
 
 /**
  * Get all available tools
@@ -107,6 +114,11 @@ export function getAllTools() {
     deployFunctionTool,
     listEdgeFunctionsTool,
     deleteFunctionTool,
+    // Monitoring Tools
+    healthCheckTool,
+    getConnectionStatsTool,
+    getRecoveryStatsTool,
+    resetCircuitBreakerTool,
   ];
 
   // Only include AI tools if OPENAI_API_KEY is set
@@ -252,6 +264,18 @@ export function registerCallToolHandler(server, connectionManager) {
         ].includes(name)
       ) {
         return await handleEdgeFunctionToolCall(name, args);
+      }
+
+      // Monitoring Tools
+      if (
+        [
+          healthCheckTool.name,
+          getConnectionStatsTool.name,
+          getRecoveryStatsTool.name,
+          resetCircuitBreakerTool.name,
+        ].includes(name)
+      ) {
+        return await handleMonitoringToolCall(name, args, connectionManager);
       }
 
       throw new Error(`Unknown tool: ${name}`);

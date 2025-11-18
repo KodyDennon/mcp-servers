@@ -16,11 +16,13 @@
 This MCP server now supports **TWO modes of operation**:
 
 ### 1. Direct Tool Mode (Traditional MCP)
+
 - Claude calls 35 database tools directly
 - Perfect for simple operations
 - Works with all MCP clients
 
 ### 2. Code Execution Mode (NEW! 🔥)
+
 - **98.7% token reduction** for data operations
 - **Privacy-first**: PII stays in sandbox
 - **Complex operations**: Multi-step analysis in single code blocks
@@ -52,6 +54,7 @@ MCP_MODE=code-api CODE_EXECUTION_MODE=direct npm start
 ```
 
 **Execution Modes Explained:**
+
 - **`sandbox`**: Code runs in Claude Code's sandbox environment (safer, PII-protected, restricted access)
 - **`direct`**: Code runs directly on your server (more powerful, full access, requires trust)
 
@@ -84,20 +87,20 @@ Claude: "Show me active users"
 ### Code Execution Mode
 
 ```typescript
-import { query } from './servers/supabase-db/query';
-import { DataPipeline } from './servers/supabase-db/pipeline';
+import { query } from "./servers/supabase-db/query";
+import { DataPipeline } from "./servers/supabase-db/pipeline";
 
 const users = await query({
-  sql: 'SELECT * FROM users WHERE active = true',
+  sql: "SELECT * FROM users WHERE active = true",
   cache: true,
-  privacy: 'tokenize'  // PII protected!
+  privacy: "tokenize", // PII protected!
 });
 
 const summary = new DataPipeline(users.rows)
-  .groupBy('country')
-  .aggregate(users => ({
+  .groupBy("country")
+  .aggregate((users) => ({
     count: users.length,
-    avg_age: users.reduce((sum, u) => sum + u.age, 0) / users.length
+    avg_age: users.reduce((sum, u) => sum + u.age, 0) / users.length,
   }))
   .result();
 
@@ -111,42 +114,59 @@ return summary; // Only 500 tokens instead of 50,000!
 ### Direct Tool Mode (35 Tools)
 
 #### Connection Management (3 tools)
+
 - `connectToDatabase` - Multi-database support
 - `listConnections` - View active connections
 - `switchConnection` - Switch between databases
 
 #### Query Operations (3 tools)
+
 - `query` - Execute SELECT queries
 - `queryTransaction` - Atomic transactions
 - `explainQuery` - Query optimization
 
 #### Schema Management (11 tools)
+
 - `listTables`, `getTableSchema`, `listIndexes`, `listFunctions`
 - `createTable`, `dropTable`, `addColumn`, `dropColumn`
 - `createIndex`, `searchSchema`, `diffSchema`
 
 #### Data Operations (4 tools)
+
 - `importData`, `insertRow`, `updateRow`, `deleteRow`
 
 #### Migration Tools (4 tools)
+
 - `runMigration`, `listMigrations`, `generateMigration`, `seedData`
 
 #### Admin Tools (4 tools)
+
 - `getDatabaseStats`, `createBackup`, `manageAuth`, `manageStorage`
 
 #### Real-time (1 tool)
+
 - `subscribe` - Real-time updates
 
 #### Edge Functions (3 tools)
+
 - `deployFunction`, `listEdgeFunctions`, `deleteFunction`
 
 #### AI Tools (3 tools)
+
 - `rag` - Retrieval-Augmented Generation
 - `indexDirectory`, `indexUrl` - Vector search
+
+#### Monitoring Tools (4 tools) 🆕
+
+- `health_check` - Comprehensive server health diagnostics
+- `get_connection_stats` - Connection pool and circuit breaker stats
+- `get_recovery_stats` - Auto-recovery statistics
+- `reset_circuit_breaker` - Manual circuit breaker reset
 
 ### Code Execution Mode (NEW!)
 
 #### Core Modules
+
 - `query` - SQL execution with caching & privacy
 - `schema` - Schema inspection & modification
 - `data` - CRUD operations
@@ -154,6 +174,7 @@ return summary; // Only 500 tokens instead of 50,000!
 - `admin` - Administrative operations
 
 #### Advanced Features
+
 - **QueryBuilder** - Composable SQL queries
 - **DataPipeline** - Transform data efficiently
 - **Streaming** - Process huge datasets
@@ -161,6 +182,7 @@ return summary; // Only 500 tokens instead of 50,000!
 - **PrivacyFilter** - Automatic PII protection
 
 #### Skills Library
+
 - **User Analytics** - Growth, retention, engagement
 - **Data Quality** - Duplicates, nulls, outliers
 - **Reporting** - Daily summaries, time series, cohorts
@@ -169,13 +191,33 @@ return summary; // Only 500 tokens instead of 50,000!
 
 ## 📊 Performance Comparison
 
-| Feature | Direct Tools | Code Execution | Improvement |
-|---------|--------------|----------------|-------------|
-| Query 10K rows | 50,000 tokens | 2,000 tokens | **96% reduction** |
-| PII Protection | ❌ Manual | ✅ Automatic | Privacy-first |
-| Result Caching | ❌ None | ✅ Built-in | 80%+ hit rate |
-| Multi-step Ops | Multiple calls | Single block | Simpler |
-| Streaming | ❌ Load all | ✅ Incremental | Memory efficient |
+| Feature        | Direct Tools   | Code Execution | Improvement       |
+| -------------- | -------------- | -------------- | ----------------- |
+| Query 10K rows | 50,000 tokens  | 2,000 tokens   | **96% reduction** |
+| PII Protection | ❌ Manual      | ✅ Automatic   | Privacy-first     |
+| Result Caching | ❌ None        | ✅ Built-in    | 80%+ hit rate     |
+| Multi-step Ops | Multiple calls | Single block   | Simpler           |
+| Streaming      | ❌ Load all    | ✅ Incremental | Memory efficient  |
+
+## 🛡️ Reliability & Robustness
+
+Production-grade reliability features ensure stable operation:
+
+- **🏥 Health Monitoring** - Comprehensive diagnostics for database, memory, and response times
+- **⚡ Circuit Breaker** - Prevents cascading failures by failing fast when services are unhealthy
+- **🔄 Auto-Recovery** - Automatically detects and recovers from connection issues
+- **🐕 Connection Watchdog** - Continuously monitors connection health and triggers recovery
+- **✨ Graceful Shutdown** - Clean resource cleanup on server termination
+
+**Key Features:**
+
+- Circuit breaker with 3 states (CLOSED, OPEN, HALF_OPEN)
+- Automatic recovery from CONNECTION_LOST, TIMEOUT, POOL_EXHAUSTED, and more
+- Exponential backoff retry with configurable attempts
+- Health check API with historical statistics
+- Zero-configuration defaults with full customization options
+
+[📖 Read the Reliability Guide →](./RELIABILITY.md)
 
 ---
 
