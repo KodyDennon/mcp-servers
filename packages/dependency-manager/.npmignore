@@ -1,0 +1,10 @@
+src/
+tests/
+*.ts
+!*.d.ts
+tsconfig.json
+jest.config.cjs
+babel.config.cjs
+coverage/
+.env
+*.map

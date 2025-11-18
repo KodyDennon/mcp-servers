@@ -1,0 +1,77 @@
+{
+  "name": "mcp-dependency-manager",
+  "version": "0.1.0",
+  "description": "Model Context Protocol (MCP) server for intelligent dependency management. Analyze dependencies, check for updates, security vulnerabilities, license issues, and bundle size impacts with AI-powered recommendations.",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "dependency-manager-mcp": "index.js",
+    "dependency-manager-setup": "setup.js"
+  },
+  "files": [
+    "index.js",
+    "setup.js",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "Dockerfile",
+    ".dockerignore"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "build": "npx tsc",
+    "test": "npm run build && jest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "dotenv": "^17.2.3",
+    "zod": "^4.1.12",
+    "axios": "^1.6.0",
+    "semver": "^7.6.0",
+    "pacote": "^17.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@types/node": "^24.10.1",
+    "@types/semver": "^7.5.6",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "dependencies",
+    "npm",
+    "package-manager",
+    "security",
+    "vulnerabilities",
+    "license",
+    "bundle-size",
+    "outdated",
+    "ai",
+    "llm",
+    "claude",
+    "dependency-management"
+  ],
+  "author": "Kody Dennon",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KodyDennon/mcp-servers.git",
+    "directory": "packages/dependency-manager"
+  },
+  "bugs": {
+    "url": "https://github.com/KodyDennon/mcp-servers/issues"
+  },
+  "homepage": "https://github.com/KodyDennon/mcp-servers/tree/main/packages/dependency-manager#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
