@@ -1,5 +1,5 @@
 // Mock dependencies before importing
-jest.mock('../src/config', () => ({
+jest.mock('../config', () => ({
   loadConfig: jest.fn(),
   ensureEnvironment: jest.fn(),
   interactiveSetup: jest.fn(),
@@ -8,7 +8,7 @@ jest.mock('../src/config', () => ({
   loadEnvConfig: jest.fn(),
 }));
 
-import { createServer } from '../src/server';
+import { createServer } from '../server';
 
 describe('server', () => {
   describe('createServer', () => {

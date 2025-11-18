@@ -1,4 +1,4 @@
-import { ConnectionManager } from '../src/connectionManager';
+import { ConnectionManager } from '../connectionManager';
 import pg from 'pg';
 
 // Mock pg module
@@ -19,7 +19,13 @@ describe('ConnectionManager', () => {
   let mockClient;
 
   beforeEach(() => {
-    connectionManager = new ConnectionManager();
+    // Disable reliability features for simpler testing
+    connectionManager = new ConnectionManager({
+      enableReliability: false,
+      enableAutoRecovery: false,
+      enableHealthMonitoring: false,
+      enableWatchdog: false,
+    });
     mockClient = {
       query: jest.fn(),
       release: jest.fn(),

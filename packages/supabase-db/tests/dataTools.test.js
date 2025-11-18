@@ -62,33 +62,39 @@ describe('dataTools', () => {
     it('should release client even on error', async () => {
       mockClient.query.mockRejectedValue(new Error('Query failed'));
 
-      await expect(
-        handleDataToolCall(
-          insertRowTool.name,
-          { tableName: 'users', data: { name: 'Alice' } },
-          mockConnectionManager
-        )
-      ).rejects.toThrow();
+      const result = await handleDataToolCall(
+        insertRowTool.name,
+        { tableName: 'users', data: { name: 'Alice' } },
+        mockConnectionManager
+      );
 
+      // Error handler returns error as JSON instead of throwing
+      expect(result.error).toBeDefined();
+      expect(result.error.code).toBe('INTERNAL_ERROR');
       expect(mockClient.release).toHaveBeenCalled();
     });
 
     it('should get connection from connection manager', async () => {
-      await handleDataToolCall(
+      mockClient.query.mockResolvedValue({ rows: [{ id: 1, name: 'Alice' }] });
+
+      const result = await handleDataToolCall(
         insertRowTool.name,
         { tableName: 'users', data: { name: 'Alice' } },
         mockConnectionManager
-      ).catch(() => {});
+      );
 
       expect(mockConnectionManager.getConnection).toHaveBeenCalled();
       expect(mockPool.connect).toHaveBeenCalled();
+      expect(result.success).toBe(true);
     });
 
-    it('should throw error for unknown tool name', async () => {
-      await expect(
-        handleDataToolCall('unknownTool', {}, mockConnectionManager)
-      ).rejects.toThrow('Unknown tool: unknownTool');
+    it('should return error for unknown tool name', async () => {
+      const result = await handleDataToolCall('unknownTool', {}, mockConnectionManager);
 
+      // Error handler returns error as JSON instead of throwing
+      expect(result.error).toBeDefined();
+      expect(result.error.code).toBe('VALIDATION_INVALID_INPUT');
+      expect(result.error.message).toContain('Unknown tool: unknownTool');
       expect(mockClient.release).toHaveBeenCalled();
     });
   });
