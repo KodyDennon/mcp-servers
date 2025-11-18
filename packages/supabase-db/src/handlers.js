@@ -67,6 +67,27 @@ import {
   resetCircuitBreakerTool,
   handleMonitoringToolCall,
 } from "./tools/monitoringTools.js";
+import {
+  getCacheStatsTool,
+  clearCacheTool,
+  listTemplatesTool,
+  getTemplateTool,
+  executeTemplateTool,
+  getHelpTool,
+  searchHelpTool,
+  startTourTool,
+  getRateLimitsTool,
+  setClientTierTool,
+  registerTenantTool,
+  listTenantsTool,
+  listPluginsTool,
+  enablePluginTool,
+  disablePluginTool,
+  getMetricsTool,
+  analyzeQueryTool,
+  getOptimizationReportTool,
+  handleAdvancedToolCall,
+} from "./tools/advancedTools.js";
 
 /**
  * Get all available tools
@@ -119,6 +140,25 @@ export function getAllTools() {
     getConnectionStatsTool,
     getRecoveryStatsTool,
     resetCircuitBreakerTool,
+    // Advanced Tools (Phases 4-9)
+    getCacheStatsTool,
+    clearCacheTool,
+    listTemplatesTool,
+    getTemplateTool,
+    executeTemplateTool,
+    getHelpTool,
+    searchHelpTool,
+    startTourTool,
+    getRateLimitsTool,
+    setClientTierTool,
+    registerTenantTool,
+    listTenantsTool,
+    listPluginsTool,
+    enablePluginTool,
+    disablePluginTool,
+    getMetricsTool,
+    analyzeQueryTool,
+    getOptimizationReportTool,
   ];
 
   // Only include AI tools if OPENAI_API_KEY is set
@@ -149,7 +189,10 @@ export function registerListToolsHandler(server) {
 /**
  * Register the call tool handler
  */
-export function registerCallToolHandler(server, connectionManager) {
+export function registerCallToolHandler(server, context) {
+  // Support both context object and connectionManager for backward compatibility
+  const connectionManager = context.connectionManager || context;
+
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
@@ -278,6 +321,32 @@ export function registerCallToolHandler(server, connectionManager) {
         return await handleMonitoringToolCall(name, args, connectionManager);
       }
 
+      // Advanced Tools (Phases 4-9)
+      if (
+        [
+          getCacheStatsTool.name,
+          clearCacheTool.name,
+          listTemplatesTool.name,
+          getTemplateTool.name,
+          executeTemplateTool.name,
+          getHelpTool.name,
+          searchHelpTool.name,
+          startTourTool.name,
+          getRateLimitsTool.name,
+          setClientTierTool.name,
+          registerTenantTool.name,
+          listTenantsTool.name,
+          listPluginsTool.name,
+          enablePluginTool.name,
+          disablePluginTool.name,
+          getMetricsTool.name,
+          analyzeQueryTool.name,
+          getOptimizationReportTool.name,
+        ].includes(name)
+      ) {
+        return await handleAdvancedToolCall(name, args, context);
+      }
+
       throw new Error(`Unknown tool: ${name}`);
     } catch (error) {
       return {
@@ -302,7 +371,7 @@ export function registerCallToolHandler(server, connectionManager) {
 /**
  * Register all handlers
  */
-export function registerHandlers(server, connectionManager) {
+export function registerHandlers(server, context) {
   registerListToolsHandler(server);
-  registerCallToolHandler(server, connectionManager);
+  registerCallToolHandler(server, context);
 }
