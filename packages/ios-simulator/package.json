@@ -5,14 +5,17 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "ios-simulator-mcp": "index.js"
+    "ios-simulator-mcp": "index.js",
+    "ios-simulator-setup": "setup.js"
   },
   "files": [
     "index.js",
+    "setup.js",
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.d.ts",
-    "README.md"
+    "README.md",
+    "Dockerfile"
   ],
   "scripts": {
     "start": "node index.js",

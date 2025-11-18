@@ -6,7 +6,6 @@ import {
   validateTableName,
   validateColumnNames,
 } from "../utils/errorHandler.js";
-
 export const importDataTool = {
   name: "importData",
   description:
@@ -40,7 +39,6 @@ export const importDataTool = {
       .optional(),
   }),
 };
-
 export const insertRowTool = {
   name: "insertRow",
   description:
@@ -62,7 +60,6 @@ export const insertRowTool = {
       .optional(),
   }),
 };
-
 export const updateRowTool = {
   name: "updateRow",
   description:
@@ -87,7 +84,6 @@ export const updateRowTool = {
       .optional(),
   }),
 };
-
 export const deleteRowTool = {
   name: "deleteRow",
   description: "Delete a row from a table by ID. Returns the deleted row.",
@@ -110,7 +106,6 @@ export const deleteRowTool = {
       .optional(),
   }),
 };
-
 /**
  * Handle data tool calls with comprehensive error handling and security
  */
@@ -119,7 +114,6 @@ export async function handleDataToolCall(toolName, input, connectionManager) {
     async () => {
       const pool = connectionManager.getConnection();
       const client = await pool.connect();
-
       try {
         switch (toolName) {
           case importDataTool.name:
@@ -143,27 +137,21 @@ export async function handleDataToolCall(toolName, input, connectionManager) {
     },
     { tool: toolName },
   );
-
   return handler();
 }
-
 /**
  * Import data with proper security and batch processing
  */
 async function handleImportData(client, input) {
   const { tableName, format, data, batchSize = 1000 } = input;
-
   // Validate and sanitize table name
   const safeTableName = validateTableName(tableName);
-
   let parsedData;
   let warnings;
-
   try {
     if (format === "json") {
       // Parse JSON data
       parsedData = JSON.parse(data);
-
       if (!Array.isArray(parsedData)) {
         throw new MCPError(
           "VALIDATION_INVALID_INPUT",
@@ -173,20 +161,16 @@ async function handleImportData(client, input) {
           },
         );
       }
-
       if (parsedData.length === 0) {
         throw new MCPError("VALIDATION_INVALID_INPUT", "JSON array is empty", {
           hint: "Provide at least one row to import",
         });
       }
-
       // Get columns from first row
       const columns = Object.keys(parsedData[0]);
       const safeColumns = validateColumnNames(columns);
-
       // Extract values
       const rows = parsedData.map((row) => columns.map((col) => row[col]));
-
       // Import in batches
       const totalRows = await importBatches(
         client,
@@ -195,7 +179,6 @@ async function handleImportData(client, input) {
         rows,
         batchSize,
       );
-
       return {
         rowsImported: totalRows,
         message: `Successfully imported ${totalRows} rows into ${safeTableName}`,
@@ -206,10 +189,8 @@ async function handleImportData(client, input) {
         maxRows: 10000,
         skipEmptyLines: true,
       });
-
       const safeColumns = validateColumnNames(parsed.columns);
       warnings = parsed.errors;
-
       // Import in batches
       const totalRows = await importBatches(
         client,
@@ -218,7 +199,6 @@ async function handleImportData(client, input) {
         parsed.rows,
         batchSize,
       );
-
       return {
         rowsImported: totalRows,
         message: `Successfully imported ${totalRows} rows into ${safeTableName}`,
@@ -237,66 +217,52 @@ async function handleImportData(client, input) {
     if (error instanceof MCPError) {
       throw error;
     }
-
     if (error instanceof SyntaxError && format === "json") {
       throw new MCPError("VALIDATION_INVALID_INPUT", "Invalid JSON format", {
         error: error.message,
         hint: "Check JSON syntax and ensure proper formatting",
       });
     }
-
     throw error;
   }
 }
-
 /**
  * Import data in batches using parameterized queries
  */
 async function importBatches(client, tableName, columns, rows, batchSize) {
   let totalImported = 0;
-
   for (let i = 0; i < rows.length; i += batchSize) {
     const batch = rows.slice(i, i + batchSize);
-
     // Build parameterized query
     const placeholders = [];
     const values = [];
     let paramIndex = 1;
-
     for (let rowIdx = 0; rowIdx < batch.length; rowIdx++) {
       const row = batch[rowIdx];
       const rowPlaceholders = [];
-
       for (let colIdx = 0; colIdx < columns.length; colIdx++) {
         rowPlaceholders.push(`$${paramIndex++}`);
         values.push(row[colIdx]);
       }
-
       placeholders.push(`(${rowPlaceholders.join(", ")})`);
     }
-
     // Build and execute safe query with parameterized values
     const query = `
             INSERT INTO "${tableName}" (${columns.map((c) => `"${c}"`).join(", ")})
             VALUES ${placeholders.join(", ")}
         `;
-
     await client.query(query, values);
     totalImported += batch.length;
   }
-
   return totalImported;
 }
-
 /**
  * Insert a single row with proper security
  */
 async function handleInsertRow(client, input) {
   const { tableName, data } = input;
-
   // Validate table name
   const safeTableName = validateTableName(tableName);
-
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new MCPError(
       "VALIDATION_INVALID_INPUT",
@@ -306,17 +272,14 @@ async function handleInsertRow(client, input) {
       },
     );
   }
-
   const columns = Object.keys(data);
   if (columns.length === 0) {
     throw new MCPError("VALIDATION_INVALID_INPUT", "Data object is empty", {
       hint: "Provide at least one column-value pair",
     });
   }
-
   const safeColumns = validateColumnNames(columns);
   const values = Object.values(data);
-
   // Build parameterized query
   const placeholders = safeColumns.map((_, i) => `$${i + 1}`).join(", ");
   const query = `
@@ -324,24 +287,19 @@ async function handleInsertRow(client, input) {
         VALUES (${placeholders})
         RETURNING *
     `;
-
   const result = await client.query(query, values);
-
   return {
     row: result.rows[0],
     message: `Successfully inserted row into ${safeTableName}`,
   };
 }
-
 /**
  * Update a row with proper security
  */
 async function handleUpdateRow(client, input) {
   const { tableName, rowId, data } = input;
-
   // Validate table name
   const safeTableName = validateTableName(tableName);
-
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new MCPError(
       "VALIDATION_INVALID_INPUT",
@@ -351,31 +309,25 @@ async function handleUpdateRow(client, input) {
       },
     );
   }
-
   const columns = Object.keys(data);
   if (columns.length === 0) {
     throw new MCPError("VALIDATION_INVALID_INPUT", "Data object is empty", {
       hint: "Provide at least one column-value pair to update",
     });
   }
-
   const safeColumns = validateColumnNames(columns);
   const values = Object.values(data);
-
   // Build parameterized query
   const setClause = safeColumns
     .map((col, i) => `"${col}" = $${i + 1}`)
     .join(", ");
-
   const query = `
         UPDATE "${safeTableName}"
         SET ${setClause}
         WHERE id = $${safeColumns.length + 1}
         RETURNING *
     `;
-
   const result = await client.query(query, [...values, rowId]);
-
   if (result.rows.length === 0) {
     throw new MCPError(
       "RESOURCE_NOT_FOUND",
@@ -387,30 +339,24 @@ async function handleUpdateRow(client, input) {
       },
     );
   }
-
   return {
     row: result.rows[0],
     message: `Successfully updated row ${rowId} in ${safeTableName}`,
   };
 }
-
 /**
  * Delete a row with proper security
  */
 async function handleDeleteRow(client, input) {
   const { tableName, rowId } = input;
-
   // Validate table name
   const safeTableName = validateTableName(tableName);
-
   const query = `
         DELETE FROM "${safeTableName}"
         WHERE id = $1
         RETURNING *
     `;
-
   const result = await client.query(query, [rowId]);
-
   if (result.rows.length === 0) {
     throw new MCPError(
       "RESOURCE_NOT_FOUND",
@@ -422,9 +368,9 @@ async function handleDeleteRow(client, input) {
       },
     );
   }
-
   return {
     row: result.rows[0],
     message: `Successfully deleted row ${rowId} from ${safeTableName}`,
   };
 }
+//# sourceMappingURL=dataTools.js.map
