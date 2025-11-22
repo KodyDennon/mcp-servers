@@ -1,0 +1,15 @@
+src/
+tests/
+*.ts
+!*.d.ts
+tsconfig.json
+jest.config.cjs
+babel.config.cjs
+coverage/
+.env
+*.map
+node_modules/
+.git/
+.gitignore
+home_mcp_server_concept_and_roadmap.md
+IMPLEMENTATION_PLAN.md
