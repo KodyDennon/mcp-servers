@@ -43,15 +43,7 @@ export function loadEnvConfig() {
   console.error(`[DEBUG] repoRoot: ${repoRoot}`);
   console.error(`[DEBUG] Attempting to load .env from: ${envPath}`);
   dotenv.config({ path: envPath, quiet: true });
-  console.error(
-    `[DEBUG] process.env.POSTGRES_URL after dotenv: ${process.env.POSTGRES_URL}`,
-  );
-  console.error(
-    `[DEBUG] process.env.POSTGRES_URL_NON_POOLING after dotenv: ${process.env.POSTGRES_URL_NON_POOLING}`,
-  );
-  console.error(
-    `[DEBUG] process.env.SUPABASE_URL after dotenv: ${process.env.SUPABASE_URL}`,
-  );
+  // Secrets should not be logged
 }
 
 /**

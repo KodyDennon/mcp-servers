@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.3.1
+
+### Patch Changes
+
+- Fix critical security issue where database connection strings were logged to the console. Added configuration for SSL and connection pool size.
+
+## 3.3.0
+
+### Minor Changes
+
+- Enterprise features (Phases 2-9) - comprehensive enhancement including production-grade reliability, security fixes, TypeScript build error resolution, and all test failures resolved (169 tests now passing).
+
 ## 3.2.4
 
 ### Patch Changes

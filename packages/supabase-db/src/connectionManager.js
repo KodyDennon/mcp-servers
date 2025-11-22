@@ -47,9 +47,9 @@ export class ConnectionManager {
       const pool = new Pool({
         connectionString,
         ssl: {
-          rejectUnauthorized: false,
+          rejectUnauthorized: process.env.PG_SSL_REJECT_UNAUTHORIZED === "true",
         },
-        max: 10,
+        max: parseInt(process.env.PG_POOL_SIZE || "10"),
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 10000,
       });

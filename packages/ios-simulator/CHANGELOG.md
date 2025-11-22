@@ -1,5 +1,11 @@
 # mcp-ios-simulator
 
+## 0.2.1
+
+### Patch Changes
+
+- Comprehensive security fixes and improvements, updated build artifacts, and general MCP server fixes.
+
 ## 0.2.0
 
 ### Minor Changes
