@@ -230,6 +230,72 @@ section {
   color: var(--text-primary);
 }
 
+/* Mobile Menu Toggle */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1002;
+}
+
+.nav__toggle span {
+  width: 100%;
+  height: 3px;
+  background: var(--text-primary);
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav__toggle.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.nav__toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav__toggle.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Mobile Menu Overlay */
+.nav__mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.nav__mobile.active {
+  transform: translateX(0);
+}
+
+.nav__mobile-link {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.nav__mobile-link:hover {
+  color: var(--accent-primary);
+}
+
 /* Hero Section */
 .hero {
   padding-top: 10rem;
@@ -399,6 +465,10 @@ section {
 
   .nav-links {
     display: none;
+  }
+
+  .nav__toggle {
+    display: flex;
   }
 
   .hero {

@@ -44,7 +44,7 @@ function initMobileMenu() {
 
 // ===== Navigation Scroll Effect =====
 function initNavScroll() {
-  const nav = document.querySelector(".nav");
+  const nav = document.querySelector(".navbar");
   if (!nav) return;
 
   let lastScroll = 0;
