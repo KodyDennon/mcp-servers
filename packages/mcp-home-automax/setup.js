@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+console.log("Home Automax MCP Server Setup");
+console.log("==============================");
+console.log("");
+console.log("Welcome to the Home Automax MCP Server!");
+console.log("");
+console.log("This MCP server provides AI control for your home automation setup.");
+console.log("");
+console.log("CURRENT STATUS:");
+console.log("  - Phase 1 (Fake Home): Ready to use with simulated devices");
+console.log("  - Phase 2+ (Real Adapters): Coming soon");
+console.log("");
+console.log("REQUIREMENTS:");
+console.log("  - Node.js 20.0.0 or higher");
+console.log("  - An MCP-compatible client (Claude Desktop, etc.)");
+console.log("");
+console.log("QUICK START:");
+console.log("  1. The server works out of the box with a fake home for testing");
+console.log("  2. Add this to your Claude Desktop config:");
+console.log("");
+console.log('    "mcp-home-automax": {');
+console.log('      "command": "npx",');
+console.log('      "args": ["-y", "mcp-home-automax"]');
+console.log("    }");
+console.log("");
+console.log("FUTURE CONFIGURATION (Phase 3+):");
+console.log("  - Home Assistant: Set HASS_URL and HASS_TOKEN");
+console.log("  - MQTT: Set MQTT_BROKER and MQTT_PORT");
+console.log("");
+console.log("For more information, visit:");
+console.log("  https://github.com/KodyDennon/mcp-servers/tree/main/packages/mcp-home-automax");
+console.log("");
