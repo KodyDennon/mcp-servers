@@ -16,6 +16,13 @@ import {
   DeviceType,
   CapabilityType,
 } from "../home-graph/types.js";
+import { Logger, LoggerFactory } from "../utils/Logger.js";
+import {
+  validateMqttTopic,
+  safeJsonParse,
+  withTimeout,
+  retryAsync,
+} from "../utils/validators.js";
 
 /**
  * MQTT device mapping configuration
@@ -76,14 +83,64 @@ export class MqttAdapter extends BaseAdapter {
   protected deviceMappings: Map<string, MqttDeviceMapping> = new Map();
   protected devices: Map<string, Device> = new Map();
   protected topicToDeviceMap: Map<string, string> = new Map();
+  protected logger: Logger;
+  protected connectionAttempts: number = 0;
+  protected maxConnectionAttempts: number = 5;
 
   constructor(config: MqttAdapterConfig) {
     super(config);
     this.mqttConfig = config;
+    this.logger = LoggerFactory.getLogger(`MqttAdapter:${config.id}`);
 
-    // Build device mappings
-    for (const mapping of config.devices) {
-      this.deviceMappings.set(mapping.id, mapping);
+    // Validate and build device mappings
+    try {
+      this.validateConfig(config);
+      for (const mapping of config.devices) {
+        this.deviceMappings.set(mapping.id, mapping);
+      }
+      this.logger.info('MQTT adapter initialized', {
+        deviceCount: config.devices.length,
+        broker: config.broker.url,
+      });
+    } catch (error) {
+      this.logger.error('Failed to initialize MQTT adapter', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Validate MQTT configuration
+   */
+  private validateConfig(config: MqttAdapterConfig): void {
+    if (!config.broker?.url) {
+      throw new Error('MQTT broker URL is required');
+    }
+
+    if (!config.devices || config.devices.length === 0) {
+      this.logger.warn('No devices configured for MQTT adapter');
+    }
+
+    // Validate device mappings
+    for (const device of config.devices || []) {
+      if (!device.id || !device.name) {
+        throw new Error('Device must have id and name');
+      }
+
+      if (!device.capabilities || device.capabilities.length === 0) {
+        throw new Error(`Device ${device.id} has no capabilities`);
+      }
+
+      // Validate topics
+      for (const cap of device.capabilities) {
+        try {
+          validateMqttTopic(cap.stateTopic);
+          validateMqttTopic(cap.commandTopic);
+        } catch (error) {
+          throw new Error(
+            `Invalid topic for device ${device.id}: ${error instanceof Error ? error.message : String(error)}`
+          );
+        }
+      }
     }
   }
 

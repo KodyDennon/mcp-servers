@@ -5,6 +5,73 @@ All notable changes to mcp-home-automax will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-11-22
+
+### Added - Comprehensive Error Handling & Logging
+
+#### Centralized Logging System
+- Structured logging with configurable log levels (ERROR, WARN, INFO, DEBUG)
+- Contextual logger with hierarchical naming
+- Environment variable support for log level configuration (LOG_LEVEL)
+- Timestamp and context formatting for all log messages
+- Separate loggers for each component (Server, Adapters, Tools)
+
+#### Input Validation & Sanitization
+- Comprehensive validator utilities for all input types
+- Device ID validation and sanitization
+- Numeric parameter validation with min/max bounds
+- Temperature, brightness, position, and volume validators
+- Boolean, string, and URL validation
+- MQTT topic validation with proper rules
+- Time string validation (HH:MM format)
+- Day of week validation
+- RGB color array validation
+- Array and object sanitization utilities
+
+#### Retry & Timeout Mechanisms
+- Async operation retry wrapper with exponential backoff
+- Configurable timeout wrapper for all async operations
+- Network error detection and automatic retry
+- Operation timeouts with descriptive error messages
+
+#### Error Handling Framework
+- Custom McpError class with error type classification
+- Error types: VALIDATION, NOT_FOUND, NETWORK, TIMEOUT, PERMISSION, INTERNAL, CONFIG, DEVICE_OFFLINE
+- User-friendly error formatting
+- Safe execution wrapper for critical operations
+- Tool error handler with automatic error response generation
+- Required argument validation
+- Edge case handling throughout
+
+#### Enhanced Server Robustness
+- Global uncaught exception handler
+- Unhandled promise rejection handler
+- Safe adapter initialization with retries and timeouts
+- Safe device/scene/area discovery with timeouts
+- Improved error logging for all tool calls
+- Graceful degradation when adapters fail
+- Enhanced shutdown handling
+
+#### MQTT Adapter Enhancements
+- Configuration validation on initialization
+- Topic validation for all MQTT topics
+- Enhanced error logging throughout
+- Connection attempt tracking
+- Safe JSON parsing with fallbacks
+
+### Changed
+- All adapters now use structured logging
+- Server initialization wrapped in comprehensive try-catch
+- Tool handlers use centralized error response creation
+- MQTT adapter validates configuration before connecting
+
+### Improved
+- Better error messages with context and details
+- Consistent error handling across all components
+- Production-ready exception handling
+- Graceful handling of edge cases
+- Better debugging with structured logs
+
 ## [1.0.0] - 2025-11-22
 
 ### Added
