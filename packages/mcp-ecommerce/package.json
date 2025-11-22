@@ -1,21 +1,30 @@
 {
   "name": "mcp-ecommerce",
   "version": "0.1.0",
-  "description": "Universal MCP server for E-commerce integrations (Shopify, Amazon, etc.)",
-  "main": "dist/index.js",
+  "description": "Production-ready E-commerce MCP Server with multi-platform support",
   "type": "module",
+  "bin": {
+    "mcp-ecommerce-init": "bin/setup.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "npm run build && node bin/setup.js",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist",
+    "rebuild": "npm run clean && npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
-    "zod": "^3.22.4"
+    "zod": "^3.24.1",
+    "inquirer": "^12.3.0",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "typescript": "^5.3.3"
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5"
   }
 }

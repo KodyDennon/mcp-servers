@@ -9,11 +9,16 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { EcommercePlugin } from "./types.js";
+import { ConfigManager } from "./config-manager.js";
 
 import { ShopifyPlugin } from "./plugins/shopify.js";
 import { AmazonPlugin } from "./plugins/amazon.js";
 import { FedExPlugin } from "./plugins/fedex.js";
 import { QuickBooksPlugin } from "./plugins/quickbooks.js";
+import { CodeExecutionManager } from "./code-execution/manager.js";
+import { ReturnsOrchestrator } from "./intelligence/returns-orchestrator.js";
+import { InventoryForecaster } from "./intelligence/inventory-forecaster.js";
+import { RFMAnalyzer } from "./intelligence/rfm-analyzer.js";
 
 // Plugin Registry
 const plugins: EcommercePlugin[] = [
@@ -35,6 +40,12 @@ const server = new Server(
     },
   },
 );
+
+const config = new ConfigManager();
+const codeManager = new CodeExecutionManager();
+const returnsOrchestrator = new ReturnsOrchestrator();
+const inventoryForecaster = new InventoryForecaster();
+const rfmAnalyzer = new RFMAnalyzer();
 
 // Tools
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -61,6 +72,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             limit: { type: "number", description: "Max number of orders" },
             source: { type: "string", description: "Filter by source" },
           },
+        },
+      },
+      {
+        name: "execute_code",
+        description:
+          "Execute a TypeScript script to interact with all plugins efficiently. Use this for complex logic, filtering, or multi-step workflows. Available globals: shopify, amazon, fedex, quickbooks, fs (read/write to .data/).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            code: {
+              type: "string",
+              description: "The TypeScript code to execute",
+            },
+          },
+          required: ["code"],
         },
       },
       // Logistics Tools
@@ -93,6 +119,120 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ["orderId", "platform"],
+        },
+      },
+      // Returns Tools
+      {
+        name: "add_return_rule",
+        description:
+          "Add a new return policy rule that will be evaluated for future returns",
+        inputSchema: {
+          type: "object",
+          properties: {
+            condition: {
+              type: "string",
+              description:
+                "JavaScript condition (e.g., 'order.totalPrice < 50')",
+            },
+            action: {
+              type: "string",
+              enum: ["approve", "reject", "review"],
+              description: "Action to take",
+            },
+            priority: {
+              type: "number",
+              description: "Rule priority (lower = higher priority)",
+            },
+            description: {
+              type: "string",
+              description: "Description of the rule",
+            },
+          },
+          required: ["condition", "action", "priority"],
+        },
+      },
+      {
+        name: "check_return_eligibility",
+        description:
+          "Check if an order is eligible for return and what action should be taken",
+        inputSchema: {
+          type: "object",
+          properties: {
+            orderId: { type: "string", description: "Order ID" },
+            reason: {
+              type: "string",
+              description: "Reason for return (optional)",
+            },
+          },
+          required: ["orderId"],
+        },
+      },
+      {
+        name: "process_return",
+        description:
+          "Process a complete return workflow: check eligibility, create label, draft refund, update inventory",
+        inputSchema: {
+          type: "object",
+          properties: {
+            orderId: { type: "string", description: "Order ID" },
+            reason: {
+              type: "string",
+              description: "Reason for return (optional)",
+            },
+          },
+          required: ["orderId"],
+        },
+      },
+      // Inventory Intelligence Tools
+      {
+        name: "get_inventory_forecast",
+        description: "Get inventory forecast for a SKU using linear regression",
+        inputSchema: {
+          type: "object",
+          properties: {
+            sku: { type: "string", description: "Product SKU" },
+            daysAhead: {
+              type: "number",
+              description: "Number of days to forecast (default: 7)",
+            },
+          },
+          required: ["sku"],
+        },
+      },
+      {
+        name: "get_inventory_alerts",
+        description: "Get alerts for SKUs at risk of stockout",
+        inputSchema: {
+          type: "object",
+          properties: {
+            threshold: {
+              type: "number",
+              description: "Days threshold for alert (default: 10)",
+            },
+          },
+        },
+      },
+      // Customer Intelligence Tools
+      {
+        name: "analyze_customers",
+        description: "Run RFM analysis on orders to segment customers",
+        inputSchema: {
+          type: "object",
+          properties: {
+            source: {
+              type: "string",
+              description: "Marketplace source (optional)",
+            },
+          },
+        },
+      },
+      {
+        name: "get_customer_segments",
+        description:
+          "Get customers grouped by segment (Whale, Loyal, At Risk, New, Lost)",
+        inputSchema: {
+          type: "object",
+          properties: {},
         },
       },
     ],
@@ -152,6 +292,27 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 
+  // --- Code Execution Tool ---
+  if (name === "execute_code") {
+    const code = String(args?.code);
+    try {
+      const result = await codeManager.executeCode(code);
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error executing code: ${(error as Error).message}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
   // --- Logistics Tools ---
   if (name === "create_shipping_label") {
     const orderId = String(args?.orderId);
@@ -195,6 +356,147 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         {
           type: "text",
           text: `Invoice creation initiated for ${orderId} via ${platform}`,
+        },
+      ],
+    };
+  }
+
+  // --- Returns Tools ---
+  if (name === "add_return_rule") {
+    const condition = String(args?.condition);
+    const action = String(args?.action) as "approve" | "reject" | "review";
+    const priority = Number(args?.priority);
+    const description = String(args?.description || "");
+
+    const rule = returnsOrchestrator.addRule({
+      condition,
+      action,
+      priority,
+      description,
+    });
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(rule, null, 2),
+        },
+      ],
+    };
+  }
+
+  if (name === "check_return_eligibility") {
+    const orderId = String(args?.orderId);
+    const reason = String(args?.reason || "");
+
+    const result = await returnsOrchestrator.checkEligibility(orderId, reason);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+
+  if (name === "process_return") {
+    const orderId = String(args?.orderId);
+    const reason = String(args?.reason || "");
+
+    const result = await returnsOrchestrator.processReturn(orderId, reason);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+
+  // --- Inventory Intelligence Tools ---
+  if (name === "get_inventory_forecast") {
+    const sku = String(args?.sku);
+    const daysAhead = Number(args?.daysAhead) || 7;
+
+    const forecast = inventoryForecaster.forecast(sku, daysAhead);
+    if (!forecast) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Not enough data to forecast. Need at least 3 historical snapshots.",
+          },
+        ],
+      };
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(forecast, null, 2),
+        },
+      ],
+    };
+  }
+
+  if (name === "get_inventory_alerts") {
+    const threshold = Number(args?.threshold) || 10;
+    const alerts = inventoryForecaster.getAlerts(threshold);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(alerts, null, 2),
+        },
+      ],
+    };
+  }
+
+  // --- Customer Intelligence Tools ---
+  if (name === "analyze_customers") {
+    const source = String(args?.source || "");
+
+    // Fetch orders from marketplace(s)
+    const orders = [];
+    for (const plugin of plugins) {
+      if (
+        plugin.isEnabled() &&
+        plugin.type === "marketplace" &&
+        (!source || plugin.name === source)
+      ) {
+        try {
+          const pluginOrders = await (plugin as any).getOrders(100);
+          orders.push(...pluginOrders);
+        } catch (error) {
+          console.error(`Error fetching orders from ${plugin.name}:`, error);
+        }
+      }
+    }
+
+    rfmAnalyzer.analyzeOrders(orders);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Analyzed ${orders.length} orders. Use get_customer_segments to view results.`,
+        },
+      ],
+    };
+  }
+
+  if (name === "get_customer_segments") {
+    const segments = rfmAnalyzer.getSegments();
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(segments, null, 2),
         },
       ],
     };
