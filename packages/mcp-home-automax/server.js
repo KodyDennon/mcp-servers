@@ -10,9 +10,13 @@ import { HomeGraph } from "./home-graph/HomeGraph.js";
 import { AdapterManager } from "./adapters/AdapterManager.js";
 import { FakeAdapter } from "./adapters/FakeAdapter.js";
 import { HomeAssistantAdapter } from "./adapters/HomeAssistantAdapter.js";
+import { MqttAdapter } from "./adapters/MqttAdapter.js";
+import { Zigbee2MqttAdapter } from "./adapters/Zigbee2MqttAdapter.js";
+import { ZwaveAdapter } from "./adapters/ZwaveAdapter.js";
 import { PolicyEngine } from "./policy/PolicyEngine.js";
 import { ConfigManager } from "./config/ConfigManager.js";
 import { getDeviceTools, handleDeviceToolCall } from "./tools/deviceTools.js";
+import { getSceneTools, handleSceneToolCall } from "./tools/sceneTools.js";
 import { getResources, handleResourceRead } from "./tools/resourceTools.js";
 dotenv.config();
 /**
@@ -38,7 +42,18 @@ export async function startServer() {
             const adapter = new HomeAssistantAdapter(adapterConfig);
             adapterManager.registerAdapter(adapter, priority);
         }
-        // Future adapters (MQTT, Zigbee2MQTT, Z-Wave) can be added here
+        else if (adapterConfig.type === "mqtt") {
+            const adapter = new MqttAdapter(adapterConfig);
+            adapterManager.registerAdapter(adapter, priority);
+        }
+        else if (adapterConfig.type === "zigbee2mqtt") {
+            const adapter = new Zigbee2MqttAdapter(adapterConfig);
+            adapterManager.registerAdapter(adapter, priority);
+        }
+        else if (adapterConfig.type === "zwave") {
+            const adapter = new ZwaveAdapter(adapterConfig);
+            adapterManager.registerAdapter(adapter, priority);
+        }
     }
     // Initialize all adapters
     await adapterManager.initializeAll();
@@ -65,7 +80,7 @@ export async function startServer() {
         },
     });
     // Get all tools
-    const allTools = [...getDeviceTools()];
+    const allTools = [...getDeviceTools(), ...getSceneTools()];
     // Handle list_tools request
     server.setRequestHandler(ListToolsRequestSchema, async () => {
         return {
@@ -77,7 +92,16 @@ export async function startServer() {
         const { name, arguments: args } = request.params;
         try {
             // Route to appropriate tool handler
-            if (name.startsWith("home_")) {
+            if (name.startsWith("home_list_scenes") ||
+                name.startsWith("home_get_scene") ||
+                name.startsWith("home_find_scenes") ||
+                name.startsWith("home_run_scene") ||
+                name.startsWith("home_get_context") ||
+                name.startsWith("home_list_groups") ||
+                name.startsWith("home_set_group")) {
+                return await handleSceneToolCall(name, args || {}, homeGraph, adapterManager, policyEngine);
+            }
+            else if (name.startsWith("home_")) {
                 return await handleDeviceToolCall(name, args || {}, homeGraph, adapterManager, policyEngine);
             }
             throw new Error(`Unknown tool: ${name}`);

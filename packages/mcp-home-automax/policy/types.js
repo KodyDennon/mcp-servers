@@ -18,5 +18,7 @@ export var PolicyDecision;
     PolicyDecision["ALLOW"] = "allow";
     PolicyDecision["DENY"] = "deny";
     PolicyDecision["REQUIRE_CONFIRMATION"] = "require_confirmation";
+    PolicyDecision["MODIFY"] = "modify";
+    PolicyDecision["LOG_ONLY"] = "log_only";
 })(PolicyDecision || (PolicyDecision = {}));
 //# sourceMappingURL=types.js.map

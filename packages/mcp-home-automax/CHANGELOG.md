@@ -5,6 +5,54 @@ All notable changes to mcp-home-automax will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-11-22
+
+### Added
+
+#### Phase 4 - Advanced Policy & Safety Engine
+- Enhanced audit logging system with comprehensive tracking of all actions
+- Confirmation workflow with token-based pending actions and expiration
+- Time-based quiet hours checking with day-of-week filtering
+- Value bounds checking for temperature, brightness, position, and volume
+- Global bounds enforcement for temperature and brightness
+- Risk level classification and policy evaluation enhancements
+- Audit log query and statistics
+- Confirmation timeout and cleanup mechanisms
+
+#### Phase 5 - MQTT, Zigbee2MQTT, and Z-Wave Adapters
+- Generic MQTT adapter with flexible topic mapping and payload formats
+- Zigbee2MQTT adapter with automatic device discovery from bridge
+- Z-Wave JS adapter with WebSocket API integration
+- Support for custom device mappings in MQTT adapter
+- Auto-discovery of Zigbee devices via Zigbee2MQTT bridge
+- Z-Wave node discovery with command class mapping
+- Device filtering by IEEE address or node ID
+- Multiple MQTT payload formats (JSON and raw)
+
+#### Phase 6 - Scene Tools and Context Helpers
+- `home_list_scenes` - List all available scenes with filtering
+- `home_get_scene` - Get detailed scene information
+- `home_find_scenes` - Fuzzy search for scenes by name
+- `home_run_scene` - Execute scenes with parameter support
+- `home_get_context` - Environmental context and summary
+- `home_list_groups` - List all device groups
+- `home_set_group` - Control all devices in a group
+- Aggregate sensor data collection (temperature, humidity)
+- Active device tracking and summary statistics
+- Time-based context (hour, day of week, etc.)
+
+### Changed
+- Updated server to support all new adapters (MQTT, Zigbee2MQTT, Z-Wave)
+- Enhanced tool routing for scene and context tools
+- Improved policy engine with confirmation tokens
+- Better type safety across all adapters
+
+### Improved
+- Comprehensive audit logging for compliance and debugging
+- Safer high-risk action handling with confirmations
+- Better multi-protocol device support
+- Enhanced environmental awareness for AI assistants
+
 ## [0.2.0] - 2024-11-22
 
 ### Added
