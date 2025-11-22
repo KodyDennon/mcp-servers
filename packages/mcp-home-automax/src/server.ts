@@ -16,6 +16,7 @@ import dotenv from "dotenv";
 import { HomeGraph } from "./home-graph/HomeGraph.js";
 import { AdapterManager } from "./adapters/AdapterManager.js";
 import { FakeAdapter } from "./adapters/FakeAdapter.js";
+import { HomeAssistantAdapter, type HomeAssistantConfig } from "./adapters/HomeAssistantAdapter.js";
 import { PolicyEngine } from "./policy/PolicyEngine.js";
 import { ConfigManager } from "./config/ConfigManager.js";
 import { getDeviceTools, handleDeviceToolCall } from "./tools/deviceTools.js";
@@ -39,11 +40,16 @@ export async function startServer() {
   // Initialize adapters from configuration
   const adapterConfigs = configManager.getEnabledAdapterConfigs();
   for (const adapterConfig of adapterConfigs) {
+    const priority = (adapterConfig.priority as number) || 0;
+
     if (adapterConfig.type === "fake") {
       const adapter = new FakeAdapter(adapterConfig);
-      adapterManager.registerAdapter(adapter);
+      adapterManager.registerAdapter(adapter, priority);
+    } else if (adapterConfig.type === "homeassistant") {
+      const adapter = new HomeAssistantAdapter(adapterConfig as HomeAssistantConfig);
+      adapterManager.registerAdapter(adapter, priority);
     }
-    // Future adapters (Home Assistant, MQTT, etc.) will be added here
+    // Future adapters (MQTT, Zigbee2MQTT, Z-Wave) can be added here
   }
 
   // Initialize all adapters

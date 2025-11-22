@@ -5,6 +5,65 @@ All notable changes to mcp-home-automax will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2024-11-22
+
+### Added
+
+#### Phase 2 - Enhanced Home Graph & Adapter Infrastructure
+- Enhanced device model with aliases, firmware version, and health tracking
+- Improved home graph with intelligent fuzzy device name resolution using Levenshtein distance
+- Device state change notification system with event listeners
+- Hierarchical area support with parent/child relationships
+- Device grouping capabilities
+- Adapter health monitoring and automatic reconnection with exponential backoff
+- Adapter event system for state changes and connection events
+- Command queuing and throttling in AdapterManager
+- Bulk command execution support
+- Adapter priority system for managing multiple adapters
+- Configuration file support (JSON) with Zod schema validation
+- Environment variable support for config file path (HOME_AUTOMAX_CONFIG)
+- Device override and custom area configuration support
+
+#### Phase 2 - Enhanced MCP Tools
+- `home_list_areas` - List all areas with device counts and floor filtering
+- `home_get_area` - Get area details with all contained devices
+- `home_set_thermostat` - Control thermostats (temperature and HVAC mode)
+- `home_set_color` - Set color for color-capable lights (hue, saturation, RGB)
+- `home_set_cover` - Control covers/blinds (open, close, stop, set position)
+
+#### Phase 3 - Home Assistant Integration
+- Full Home Assistant adapter with WebSocket and REST API support
+- Real-time state synchronization via WebSocket subscriptions
+- Automatic entity discovery and mapping from Home Assistant
+- Support for all major Home Assistant domains:
+  - Lights (with brightness and color)
+  - Switches
+  - Climate/Thermostats
+  - Locks
+  - Covers
+  - Media players
+  - Sensors
+  - Cameras
+  - Fans
+  - Vacuums
+- Area and scene discovery from Home Assistant
+- Automatic reconnection on WebSocket disconnection
+- Domain and area filtering configuration
+- Service call mapping for all device types
+- Health check via REST API
+
+### Changed
+- Upgraded adapter interface with health monitoring methods
+- Enhanced AdapterManager with priority-based routing
+- Improved error handling and reconnection logic
+- Updated configuration system with validation
+
+### Improved
+- Better device name resolution with scoring and fuzzy matching
+- More robust adapter connection handling
+- Enhanced policy evaluation for new device types
+- Better state management with timestamps
+
 ## [0.1.0] - 2024-11-22
 
 ### Added

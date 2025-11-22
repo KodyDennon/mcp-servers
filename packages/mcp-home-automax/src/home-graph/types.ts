@@ -93,6 +93,7 @@ export interface Area {
 export interface Device {
   id: string;
   name: string;
+  aliases?: string[];
   type: DeviceType;
   areaId?: string;
   capabilities: Capability[];
@@ -101,8 +102,10 @@ export interface Device {
   nativeId: string;
   manufacturer?: string;
   model?: string;
+  firmwareVersion?: string;
   online?: boolean;
   lastSeen?: Date;
+  lastUpdated?: Date;
   metadata?: Record<string, unknown>;
 }
 
@@ -113,10 +116,39 @@ export interface Scene {
   id: string;
   name: string;
   description?: string;
+  icon?: string;
   tags?: string[];
   adapterId?: string;
   nativeId?: string;
+  metadata?: Record<string, unknown>;
 }
+
+/**
+ * Device group definition
+ */
+export interface DeviceGroup {
+  id: string;
+  name: string;
+  description?: string;
+  deviceIds: string[];
+  tags?: string[];
+}
+
+/**
+ * State change event
+ */
+export interface StateChangeEvent {
+  deviceId: string;
+  capability: CapabilityType;
+  oldState?: CapabilityState;
+  newState: CapabilityState;
+  timestamp: Date;
+}
+
+/**
+ * State change listener callback
+ */
+export type StateChangeListener = (event: StateChangeEvent) => void;
 
 /**
  * Complete home state snapshot
@@ -125,6 +157,7 @@ export interface HomeSnapshot {
   areas: Area[];
   devices: Device[];
   scenes: Scene[];
+  groups?: DeviceGroup[];
   timestamp: Date;
 }
 
