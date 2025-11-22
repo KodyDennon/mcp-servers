@@ -1,6 +1,6 @@
 {
   "name": "mcp-home-automax",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "Model Context Protocol (MCP) server for home automation. Control lights, thermostats, locks, and more via AI with support for Home Assistant, MQTT, Zigbee2MQTT, and Z-Wave.",
   "type": "module",
   "main": "index.js",

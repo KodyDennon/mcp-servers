@@ -108,6 +108,96 @@ export function getDeviceTools() {
         required: ["deviceId"],
       },
     },
+    {
+      name: "home_list_areas",
+      description: "List all areas/rooms in the home with device counts",
+      inputSchema: {
+        type: "object",
+        properties: {
+          floor: {
+            type: "string",
+            description: "Optional: filter areas by floor",
+          },
+        },
+      },
+    },
+    {
+      name: "home_get_area",
+      description: "Get detailed information about a specific area including all devices in it",
+      inputSchema: {
+        type: "object",
+        properties: {
+          areaId: { type: "string", description: "Area ID" },
+        },
+        required: ["areaId"],
+      },
+    },
+    {
+      name: "home_set_thermostat",
+      description: "Control a thermostat (set temperature and mode)",
+      inputSchema: {
+        type: "object",
+        properties: {
+          deviceId: { type: "string", description: "Device ID" },
+          temperature: {
+            type: "number",
+            description: "Target temperature in degrees",
+          },
+          mode: {
+            type: "string",
+            description: "HVAC mode (heat, cool, auto, off)",
+            enum: ["heat", "cool", "auto", "off"],
+          },
+        },
+        required: ["deviceId"],
+      },
+    },
+    {
+      name: "home_set_color",
+      description: "Set the color of a color-capable light",
+      inputSchema: {
+        type: "object",
+        properties: {
+          deviceId: { type: "string", description: "Device ID" },
+          hue: {
+            type: "number",
+            description: "Hue value (0-360), optional",
+          },
+          saturation: {
+            type: "number",
+            description: "Saturation (0-100), optional",
+          },
+          rgb: {
+            type: "array",
+            description: "RGB values [r, g, b] (0-255 each), optional",
+            items: { type: "number" },
+            minItems: 3,
+            maxItems: 3,
+          },
+        },
+        required: ["deviceId"],
+      },
+    },
+    {
+      name: "home_set_cover",
+      description: "Control a cover/blind (open, close, or set position)",
+      inputSchema: {
+        type: "object",
+        properties: {
+          deviceId: { type: "string", description: "Device ID" },
+          action: {
+            type: "string",
+            description: "Action to perform",
+            enum: ["open", "close", "stop", "set_position"],
+          },
+          position: {
+            type: "number",
+            description: "Position (0-100) for set_position action",
+          },
+        },
+        required: ["deviceId", "action"],
+      },
+    },
   ];
 }
 
@@ -354,6 +444,259 @@ export async function handleDeviceToolCall(
           {
             type: "text" as const,
             text: `Light controlled successfully`,
+          },
+        ],
+      };
+    }
+
+    case "home_list_areas": {
+      const { floor } = args as { floor?: string };
+      let areas = homeGraph.getAllAreas();
+
+      if (floor) {
+        areas = areas.filter((a) => a.floor === floor);
+      }
+
+      // Add device counts to each area
+      const areasWithCounts = areas.map((area) => ({
+        ...area,
+        deviceCount: homeGraph.findDevicesByArea(area.id).length,
+      }));
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(areasWithCounts, null, 2),
+          },
+        ],
+      };
+    }
+
+    case "home_get_area": {
+      const { areaId } = args as { areaId: string };
+      const area = homeGraph.getArea(areaId);
+
+      if (!area) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Area not found: ${areaId}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      const devices = homeGraph.findDevicesByArea(areaId);
+      const result = {
+        ...area,
+        devices,
+      };
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    case "home_set_thermostat": {
+      const { deviceId, temperature, mode } = args as {
+        deviceId: string;
+        temperature?: number;
+        mode?: string;
+      };
+      const device = homeGraph.getDevice(deviceId);
+
+      if (!device) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Device not found: ${deviceId}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      // Set temperature if provided
+      if (temperature !== undefined) {
+        const command = {
+          deviceId,
+          capability: CapabilityType.THERMOSTAT,
+          action: "set_temperature",
+          parameters: { temperature },
+        };
+
+        const policyResult = policyEngine.evaluateDeviceCommand(command, device);
+
+        if (policyResult.decision === PolicyDecision.DENY) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: `Action denied: ${policyResult.reason}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        await adapterManager.executeDeviceCommand(command, device.adapterId);
+      }
+
+      // Set mode if provided
+      if (mode !== undefined) {
+        const command = {
+          deviceId,
+          capability: CapabilityType.THERMOSTAT,
+          action: "set_mode",
+          parameters: { mode },
+        };
+
+        const policyResult = policyEngine.evaluateDeviceCommand(command, device);
+
+        if (policyResult.decision === PolicyDecision.DENY) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: `Action denied: ${policyResult.reason}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        await adapterManager.executeDeviceCommand(command, device.adapterId);
+      }
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Thermostat controlled successfully`,
+          },
+        ],
+      };
+    }
+
+    case "home_set_color": {
+      const { deviceId, hue, saturation, rgb } = args as {
+        deviceId: string;
+        hue?: number;
+        saturation?: number;
+        rgb?: number[];
+      };
+      const device = homeGraph.getDevice(deviceId);
+
+      if (!device) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Device not found: ${deviceId}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      const parameters: Record<string, unknown> = {};
+      if (hue !== undefined) parameters.hue = hue;
+      if (saturation !== undefined) parameters.saturation = saturation;
+      if (rgb !== undefined) parameters.rgb = rgb;
+
+      const command = {
+        deviceId,
+        capability: CapabilityType.COLOR_LIGHT,
+        action: "set_color",
+        parameters,
+      };
+
+      const policyResult = policyEngine.evaluateDeviceCommand(command, device);
+
+      if (policyResult.decision === PolicyDecision.DENY) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Action denied: ${policyResult.reason}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      await adapterManager.executeDeviceCommand(command, device.adapterId);
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Color set successfully`,
+          },
+        ],
+      };
+    }
+
+    case "home_set_cover": {
+      const { deviceId, action, position } = args as {
+        deviceId: string;
+        action: string;
+        position?: number;
+      };
+      const device = homeGraph.getDevice(deviceId);
+
+      if (!device) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Device not found: ${deviceId}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      const parameters: Record<string, unknown> = {};
+      if (position !== undefined) parameters.position = position;
+
+      const command = {
+        deviceId,
+        capability: CapabilityType.COVER,
+        action,
+        parameters,
+      };
+
+      const policyResult = policyEngine.evaluateDeviceCommand(command, device);
+
+      if (policyResult.decision === PolicyDecision.DENY) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Action denied: ${policyResult.reason}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      await adapterManager.executeDeviceCommand(command, device.adapterId);
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Cover ${action} executed successfully`,
           },
         ],
       };

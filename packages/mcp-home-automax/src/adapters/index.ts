@@ -4,4 +4,8 @@
 
 export * from "./BaseAdapter.js";
 export * from "./FakeAdapter.js";
+export * from "./HomeAssistantAdapter.js";
+export * from "./MqttAdapter.js";
+export * from "./Zigbee2MqttAdapter.js";
+export * from "./ZwaveAdapter.js";
 export * from "./AdapterManager.js";

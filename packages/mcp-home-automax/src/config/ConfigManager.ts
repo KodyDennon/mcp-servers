@@ -2,8 +2,83 @@
  * Configuration Manager - Handles server configuration
  */
 
+import { readFileSync, existsSync } from "fs";
+import { z } from "zod";
 import type { AdapterConfig } from "../adapters/BaseAdapter.js";
 import type { PolicyConfig } from "../policy/types.js";
+
+/**
+ * Zod schema for adapter configuration
+ */
+const AdapterConfigSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  enabled: z.boolean(),
+  priority: z.number().optional(),
+  maxReconnectAttempts: z.number().optional(),
+  reconnectDelay: z.number().optional(),
+  healthCheckInterval: z.number().optional(),
+}).passthrough(); // Allow additional properties
+
+/**
+ * Zod schema for server configuration
+ */
+const ServerConfigSchema = z.object({
+  adapters: z.array(AdapterConfigSchema),
+  policy: z.any().optional(),
+  server: z.object({
+    name: z.string(),
+    version: z.string(),
+    logLevel: z.enum(["error", "warn", "info", "debug"]).optional(),
+  }),
+  deviceOverrides: z.record(z.string(), z.any()).optional(),
+  deviceGroups: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string().optional(),
+        deviceIds: z.array(z.string()),
+        tags: z.array(z.string()).optional(),
+      })
+    )
+    .optional(),
+  areas: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        aliases: z.array(z.string()).optional(),
+        floor: z.string().optional(),
+        parentAreaId: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+      })
+    )
+    .optional(),
+});
+
+/**
+ * Device group configuration
+ */
+export interface DeviceGroupConfig {
+  id: string;
+  name: string;
+  description?: string;
+  deviceIds: string[];
+  tags?: string[];
+}
+
+/**
+ * Area configuration
+ */
+export interface AreaConfig {
+  id: string;
+  name: string;
+  aliases?: string[];
+  floor?: string;
+  parentAreaId?: string;
+  tags?: string[];
+}
 
 /**
  * Server configuration
@@ -16,6 +91,9 @@ export interface ServerConfig {
     version: string;
     logLevel?: "error" | "warn" | "info" | "debug";
   };
+  deviceOverrides?: Record<string, unknown>;
+  deviceGroups?: DeviceGroupConfig[];
+  areas?: AreaConfig[];
 }
 
 /**
@@ -118,9 +196,56 @@ export class ConfigManager {
   }
 
   /**
+   * Validate configuration with Zod schema
+   */
+  static validate(config: unknown): ServerConfig {
+    try {
+      return ServerConfigSchema.parse(config);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const issues = error.issues.map(
+          (issue) => `${issue.path.join(".")}: ${issue.message}`
+        );
+        throw new Error(
+          `Configuration validation failed:\n${issues.join("\n")}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Load configuration from a JSON file
+   */
+  static fromFile(filePath: string): ConfigManager {
+    if (!existsSync(filePath)) {
+      throw new Error(`Configuration file not found: ${filePath}`);
+    }
+
+    try {
+      const content = readFileSync(filePath, "utf-8");
+      const data = JSON.parse(content);
+      const validated = ConfigManager.validate(data);
+      return new ConfigManager(validated);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(`Invalid JSON in configuration file: ${filePath}`);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Load configuration from environment variables
    */
   static fromEnvironment(): ConfigManager {
+    // Check for config file path in environment
+    const configPath = process.env.HOME_AUTOMAX_CONFIG;
+    if (configPath && existsSync(configPath)) {
+      return ConfigManager.fromFile(configPath);
+    }
+
+    // Default config from environment variables
     const config: Partial<ServerConfig> = {
       server: {
         name: process.env.SERVER_NAME || "home-automax-mcp",
@@ -135,5 +260,26 @@ export class ConfigManager {
     // This can be extended to parse adapter configs from env vars
 
     return new ConfigManager(config);
+  }
+
+  /**
+   * Get device group configurations
+   */
+  getDeviceGroups(): DeviceGroupConfig[] {
+    return this.config.deviceGroups || [];
+  }
+
+  /**
+   * Get area configurations
+   */
+  getAreaConfigs(): AreaConfig[] {
+    return this.config.areas || [];
+  }
+
+  /**
+   * Get device overrides
+   */
+  getDeviceOverrides(): Record<string, unknown> {
+    return this.config.deviceOverrides || {};
   }
 }
