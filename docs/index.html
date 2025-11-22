@@ -55,6 +55,7 @@
             href="https://github.com/KodyDennon/mcp-servers"
             target="_blank"
             class="button button--secondary"
+            style="padding: 0.5rem 1rem; font-size: 0.875rem"
             >GitHub</a
           >
         </div>
@@ -69,13 +70,45 @@
 
       <!-- Mobile Menu -->
       <div class="nav__mobile">
-        <a href="#features" class="nav__mobile-link">Features</a>
-        <a href="#servers" class="nav__mobile-link">Catalog</a>
-        <a href="#quickstart" class="nav__mobile-link">Quick Start</a>
+        <a
+          href="#features"
+          class="nav__mobile-link"
+          style="
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+          "
+          >Features</a
+        >
+        <a
+          href="#servers"
+          class="nav__mobile-link"
+          style="
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+          "
+          >Catalog</a
+        >
+        <a
+          href="#quickstart"
+          class="nav__mobile-link"
+          style="
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+          "
+          >Quick Start</a
+        >
         <a
           href="https://github.com/KodyDennon/mcp-servers"
           target="_blank"
           class="nav__mobile-link"
+          style="
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+          "
           >GitHub</a
         >
       </div>
@@ -85,13 +118,20 @@
     <section class="hero">
       <div class="container hero__content">
         <div class="badge">v3.3.1 Stable Release</div>
-        <h1>Supercharge Your AI Agents</h1>
+        <h1>Supercharge Your<br />AI Agents</h1>
         <p class="hero__subtitle">
           Enterprise-grade Model Context Protocol servers. Connect Claude,
           Cursor, and Gemini to your infrastructure with production-ready
           integrations.
         </p>
-        <div class="hero__actions">
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+          "
+        >
           <a href="#quickstart" class="button button--primary">
             Start Building
             <svg
@@ -130,8 +170,13 @@
           class="code-block"
           style="text-align: left; max-width: 600px; margin: 0 auto"
         >
-          $ npm install -g mcp-supabase-db $ supabase-db-mcp --mode tools >
-          Server listening on stdio > Ready for Claude Desktop & Cursor
+          <span style="color: #7dd3fc">$</span> npm install -g
+          mcp-supabase-db<br />
+          <span style="color: #7dd3fc">$</span> supabase-db-mcp --mode tools<br />
+          <span style="color: #4ade80">> Server listening on stdio</span><br />
+          <span style="color: #4ade80"
+            >> Ready for Claude Desktop & Cursor</span
+          >
         </div>
       </div>
     </section>
@@ -144,8 +189,8 @@
           <p>Everything you need to ship reliable AI agents.</p>
         </div>
 
-        <div class="features-grid">
-          <div class="card feature-card">
+        <div class="bento-grid">
+          <div class="card feature-card bento-span-2">
             <div class="card__icon">
               <svg
                 width="24"
@@ -206,21 +251,49 @@
               optimized streaming for large datasets.
             </p>
           </div>
+
+          <div class="card feature-card bento-span-2">
+            <div class="card__icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                ></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <h3>Monorepo Architecture</h3>
+            <p>
+              Managed with pnpm workspaces and Changesets for seamless
+              versioning and dependency management across all servers.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Servers Catalog -->
-    <section id="servers" style="background: rgba(255, 255, 255, 0.02)">
+    <section id="servers">
       <div class="container">
         <div style="text-align: center; margin-bottom: var(--space-xl)">
           <h2>Server Catalog</h2>
           <p>Production-tested integrations ready to deploy.</p>
         </div>
 
-        <div class="features-grid">
+        <div class="bento-grid">
           <!-- Supabase DB -->
-          <a href="./servers/supabase-db/" class="card server-card">
+          <a
+            href="./servers/supabase-db/"
+            class="card server-card"
+            style="text-decoration: none"
+          >
             <div
               style="
                 display: flex;
@@ -244,17 +317,41 @@
                   <path d="M22 6l-10 7L2 6" />
                 </svg>
               </div>
-              <span class="badge">v3.3.1</span>
+              <span class="badge" style="margin-bottom: 0">v3.3.1</span>
             </div>
             <h3>Supabase DB</h3>
             <p>
               Complete PostgreSQL management. Query data, manage schemas, and
               run migrations with AI assistance.
             </p>
-            <div class="server-tags">
-              <span class="tag">PostgreSQL</span>
-              <span class="tag">Tools + Code</span>
-              <span class="tag">Streaming</span>
+            <div
+              style="
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                margin-top: auto;
+              "
+            >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  padding: 0.25rem 0.5rem;
+                  background: rgba(255, 255, 255, 0.05);
+                  border-radius: 4px;
+                  color: var(--text-secondary);
+                "
+                >PostgreSQL</span
+              >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  padding: 0.25rem 0.5rem;
+                  background: rgba(255, 255, 255, 0.05);
+                  border-radius: 4px;
+                  color: var(--text-secondary);
+                "
+                >Tools + Code</span
+              >
             </div>
           </a>
 
@@ -287,6 +384,7 @@
                   background: rgba(255, 255, 255, 0.1);
                   color: var(--text-secondary);
                   border-color: transparent;
+                  margin-bottom: 0;
                 "
                 >Beta</span
               >
@@ -296,15 +394,46 @@
               Control iOS Simulators directly. Install apps, launch simulators,
               and manage devices from your agent.
             </p>
-            <div class="server-tags">
-              <span class="tag">macOS</span>
-              <span class="tag">Mobile Dev</span>
-              <span class="tag">Automation</span>
+            <div
+              style="
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                margin-top: auto;
+              "
+            >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  padding: 0.25rem 0.5rem;
+                  background: rgba(255, 255, 255, 0.05);
+                  border-radius: 4px;
+                  color: var(--text-secondary);
+                "
+                >macOS</span
+              >
+              <span
+                style="
+                  font-size: 0.75rem;
+                  padding: 0.25rem 0.5rem;
+                  background: rgba(255, 255, 255, 0.05);
+                  border-radius: 4px;
+                  color: var(--text-secondary);
+                "
+                >Automation</span
+              >
             </div>
           </div>
 
           <!-- Coming Soon -->
-          <div class="card server-card" style="border-style: dashed">
+          <div
+            class="card server-card"
+            style="
+              border-style: dashed;
+              border-color: var(--text-tertiary);
+              background: transparent;
+            "
+          >
             <div
               class="card__icon"
               style="
@@ -329,9 +458,6 @@
               Have an API or tool? Contribute to the monorepo and join the
               ecosystem.
             </p>
-            <div class="server-tags">
-              <span class="tag">Open Source</span>
-            </div>
           </div>
         </div>
       </div>
@@ -341,19 +467,37 @@
     <section id="quickstart">
       <div class="container">
         <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-2xl);
-            align-items: center;
-          "
+          class="bento-grid"
+          style="grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start"
         >
-          <div>
+          <div class="bento-span-2" style="grid-column: span 1">
             <h2>Get Started in Minutes</h2>
             <p>Install globally and connect to your favorite AI tool.</p>
 
-            <div class="step-card step">
-              <div class="step-number">1</div>
+            <div
+              style="
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                align-items: flex-start;
+              "
+            >
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--bg-tertiary);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  color: var(--accent-primary);
+                  flex-shrink: 0;
+                "
+              >
+                1
+              </div>
               <div>
                 <h3>Install</h3>
                 <p style="margin-bottom: 0.5rem">
@@ -363,8 +507,30 @@
               </div>
             </div>
 
-            <div class="step-card step">
-              <div class="step-number">2</div>
+            <div
+              style="
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                align-items: flex-start;
+              "
+            >
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--bg-tertiary);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  color: var(--accent-primary);
+                  flex-shrink: 0;
+                "
+              >
+                2
+              </div>
               <div>
                 <h3>Configure</h3>
                 <p style="margin-bottom: 0.5rem">
@@ -374,15 +540,37 @@
               </div>
             </div>
 
-            <div class="step-card step">
-              <div class="step-number">3</div>
+            <div
+              style="
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                align-items: flex-start;
+              "
+            >
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--bg-tertiary);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  color: var(--accent-primary);
+                  flex-shrink: 0;
+                "
+              >
+                3
+              </div>
               <div>
                 <h3>Connect</h3>
                 <p style="margin-bottom: 0.5rem">Add to your agent's config.</p>
                 <a
                   href="./servers/supabase-db/"
                   class="button button--secondary"
-                  style="margin-top: var(--space-xs)"
+                  style="margin-top: 0.5rem"
                   >View Config Guides</a
                 >
               </div>
@@ -390,11 +578,13 @@
           </div>
 
           <div
+            class="bento-span-2"
             style="
+              grid-column: span 1;
               background: var(--bg-secondary);
               padding: var(--space-lg);
               border-radius: var(--radius-lg);
-              border: 1px solid rgba(255, 255, 255, 0.05);
+              border: 1px solid var(--border-color);
             "
           >
             <h3 style="margin-bottom: var(--space-md)">
@@ -438,7 +628,9 @@
           </div>
 
           <div>
-            <h4 class="footer__title">Servers</h4>
+            <h4 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Servers
+            </h4>
             <a href="./servers/supabase-db/" class="footer__link"
               >Supabase DB</a
             >
@@ -446,7 +638,9 @@
           </div>
 
           <div>
-            <h4 class="footer__title">Resources</h4>
+            <h4 style="margin-bottom: 1rem; color: var(--text-primary)">
+              Resources
+            </h4>
             <a
               href="https://github.com/KodyDennon/mcp-servers"
               class="footer__link"
@@ -466,7 +660,7 @@
           style="
             margin-top: var(--space-xl);
             padding-top: var(--space-lg);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color);
             text-align: center;
             color: var(--text-tertiary);
             font-size: 0.875rem;
